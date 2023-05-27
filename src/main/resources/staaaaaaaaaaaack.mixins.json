@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.frankv.staaaaaaaaaaaack.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "staaaaaaaaaaaack.refmap.json",
+  "mixins": [
+    "EntityMixin",
+    "ItemEntityAccessor",
+    "ItemEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

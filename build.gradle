@@ -1,0 +1,106 @@
+buildscript {
+    repositories {
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+    }
+}
+
+plugins {
+    id 'net.minecraftforge.gradle' version '5.1.+'
+}
+
+apply plugin: 'org.spongepowered.mixin'
+
+group = 'me.frankv'
+version = "${mc_version}-${stxck_version}"
+
+java {
+    archivesBaseName = 'Staaaaaaaaaaaack'
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
+
+minecraft {
+    mappings channel: 'official', version: "${mc_version}"
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                staaaaaaaaaaaack {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                staaaaaaaaaaaack {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+mixin {
+    add sourceSets.main, "staaaaaaaaaaaack.refmap.json"
+    config "saaaaaaaaack.mixins.json"
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    mavenCentral()
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+
+//    runtimeOnly fg.deobf("maven.modrinth:jei:${jei_version}")
+//    runtimeOnly fg.deobf("maven.modrinth:supermartijn642s-core-lib:${supermartincore_forge_version}")
+//    runtimeOnly fg.deobf("maven.modrinth:supermartijn642s-config-lib:${supermartincore_forge_version}")
+//    runtimeOnly fg.deobf("maven.modrinth:supermartijn642s-config-lib:${supermartincore_forge_version}")
+//    runtimeOnly fg.deobf("maven.modrinth:item-collectors:${itemcollectors_forge_version}")
+//    runtimeOnly fg.deobf("maven.modrinth:immersiveengineering:${immersiveengineering_version}")
+
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title": "staaaaaaaaaaaack",
+                "Specification-Vendor": "frankV",
+                "Specification-Version": "1",
+                "Implementation-Title": project.name,
+                "Implementation-Version": project.jar.archiveVersion,
+                "Implementation-Vendor": "frankV",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs": "staaaaaaaaaaaack.mixins.json"
+        ])
+    }
+}
+
+jar.finalizedBy('reobfJar')
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
