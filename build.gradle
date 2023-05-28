@@ -7,10 +7,10 @@ plugins {
 
 
 group = 'me.frankv'
-version = "${mc_version}-${stxck_version}"
+version = "${mc_version}-${stxck_version}-dev"
 
 java {
-    archivesBaseName = 'Staaaaaaaaaaaack'
+    archivesBaseName = "${mod_id}-forge-${mc_version}"
     toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
@@ -22,7 +22,7 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             mods {
-                staaaaaaaaaaaack {
+                mod_id {
                     source sourceSets.main
                 }
             }
@@ -33,7 +33,7 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             mods {
-                staaaaaaaaaaaack {
+                mod_id {
                     source sourceSets.main
                 }
             }
@@ -42,8 +42,8 @@ minecraft {
 }
 
 mixin {
-    add sourceSets.main, "staaaaaaaaaaaack.refmap.json"
-    config "staaaaaaaaaaaack.mixins.json"
+    add sourceSets.main, "${mod_id}.refmap.json"
+    config "${mod_id}.mixins.json"
     debug.verbose = true
     debug.export = true
 }
@@ -91,14 +91,14 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "Specification-Title": "staaaaaaaaaaaack",
+                "Specification-Title": "${mod_name}",
                 "Specification-Vendor": "frankV",
                 "Specification-Version": "1",
                 "Implementation-Title": project.name,
                 "Implementation-Version": project.jar.archiveVersion,
                 "Implementation-Vendor": "frankV",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs": "staaaaaaaaaaaack.mixins.json"
+                "MixinConfigs": "${mod_id}.mixins.json"
         ])
     }
 }
