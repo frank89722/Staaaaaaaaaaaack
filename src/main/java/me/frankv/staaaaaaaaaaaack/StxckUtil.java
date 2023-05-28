@@ -6,6 +6,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 
 public class StxckUtil {
@@ -13,19 +14,19 @@ public class StxckUtil {
 
     public static void refillItemStack(ItemEntity entity) {
         var extraItemCount = getExtraItemCount(entity);
-        if (extraItemCount == 0) return ;
+        if (extraItemCount <= 0) return ;
 
         var stack = entity.getItem();
-        final var maxStackSize = stack.getMaxStackSize();
-        var x = maxStackSize - stack.getCount();
+        var maxSize = stack.getMaxStackSize();
+//        if (stack == ItemStack.EMPTY || stack.is(Items.AIR) || stack.getCount() == maxSize) return;
+        if (stack.getCount() == maxSize) return;
 
-        if (extraItemCount >= x) {
-            stack.setCount(maxStackSize);
-            setExtraItemCount(entity, extraItemCount - x);
-        } else {
-            stack.setCount(extraItemCount);
-            setExtraItemCount(entity, 0);
-        }
+        var x = maxSize - stack.getCount();
+        var refillCount = Math.min(x, extraItemCount);
+
+        stack.grow(refillCount);
+        setExtraItemCount(entity, extraItemCount - refillCount);
+        entity.setItem(stack);
     }
 
     public static boolean areMergable(ItemStack itemStack, ItemStack itemStack1) {
@@ -41,12 +42,8 @@ public class StxckUtil {
     }
 
     public static void grow(ItemEntity entity, int count) {
-        var totalCount = getTotalCount(entity);
-        setTotalCount(entity, totalCount + count);
-    }
-
-    public static void shrink(ItemEntity entity, int count) {
-        grow(entity, -count);
+        setExtraItemCount(entity, getExtraItemCount(entity) + count);
+        refillItemStack(entity);
     }
 
     public static int getTotalCount(ItemEntity entity) {
@@ -57,21 +54,8 @@ public class StxckUtil {
         return entity.getEntityData().get(DATA_EXTRA_ITEM_COUNT);
     }
 
-    public static void setTotalCount(ItemEntity entity, int count) {
-        var item = entity.getItem();
-        var x = item.getMaxStackSize() - (item.getMaxStackSize() - item.getCount());
-
-        if (count > x) {
-            item.setCount(item.getMaxStackSize());
-            setExtraItemCount(entity, count - x);
-            return;
-        }
-
-        item.grow(count);
-    }
-
     public static void setExtraItemCount(ItemEntity entity, int count) {
-        if (count != 0) {
+        if (count > 0) {
             entity.setCustomName(Component.literal(String.valueOf(entity.getItem().getCount() + count)));
             entity.setCustomNameVisible(true);
         } else {

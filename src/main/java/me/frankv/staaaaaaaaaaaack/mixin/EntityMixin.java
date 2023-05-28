@@ -1,6 +1,5 @@
 package me.frankv.staaaaaaaaaaaack.mixin;
 
-import me.frankv.staaaaaaaaaaaack.StxckUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -17,6 +16,7 @@ public class EntityMixin {
     @Inject(method = "remove", at = @At("HEAD"), cancellable = true)
     private void updateItemStackOnItemEntityRemove(Entity.RemovalReason reason, CallbackInfo ci) {
         if (!getThis().getType().equals(EntityType.ITEM)) return;
+        if (!reason.equals(Entity.RemovalReason.DISCARDED)) return;
 
         var entity = (ItemEntity) getThis();
         entity.getItem().setCount(0);

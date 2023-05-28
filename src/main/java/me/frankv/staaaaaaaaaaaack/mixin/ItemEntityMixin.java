@@ -3,6 +3,7 @@ package me.frankv.staaaaaaaaaaaack.mixin;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +29,7 @@ public class ItemEntityMixin {
             at = @At("RETURN")
     )
     private void constructorSetExtraCountInject(ItemEntity itemEntity, CallbackInfo ci) {
-        setTotalCount(getThis(), getTotalCount(itemEntity));
+        setExtraItemCount(getThis(), getExtraItemCount(itemEntity));
     }
 
     @Inject(
@@ -71,12 +72,12 @@ public class ItemEntityMixin {
     private void replaceTryToMerge(ItemEntity itemEntity1, CallbackInfo ci) {
         var itemEntity = getThis();
 
-        if (Objects.equals(getThis().getOwner(), itemEntity1.getOwner())
+        if (Objects.equals(itemEntity.getOwner(), itemEntity1.getOwner())
                 && areMergable(itemEntity.getItem(), itemEntity1.getItem())) {
             if (getTotalCount(itemEntity1) < getTotalCount(itemEntity)) {
-                merge(getThis(), itemEntity1);
+                merge(itemEntity, itemEntity1);
             } else {
-                merge(itemEntity1, getThis());
+                merge(itemEntity1, itemEntity);
             }
         }
 
@@ -85,8 +86,9 @@ public class ItemEntityMixin {
 
     @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
     private void saveExtraItemCount(CompoundTag compoundTag, CallbackInfo ci) {
-        if (getExtraItemCount(getThis()) != 0) {
-            compoundTag.putInt(EXTRA_ITEM_TAG, getExtraItemCount(getThis()));
+        var self = getThis();
+        if (getExtraItemCount(self) > 0) {
+            compoundTag.putInt(EXTRA_ITEM_TAG, getExtraItemCount(self));
         }
     }
 
@@ -94,6 +96,17 @@ public class ItemEntityMixin {
     private void readExtraItemCount(CompoundTag compoundTag, CallbackInfo ci) {
         if (compoundTag.contains(EXTRA_ITEM_TAG)) {
             setExtraItemCount(getThis(), compoundTag.getInt(EXTRA_ITEM_TAG));
+        }
+    }
+
+    @Inject(method = "setItem", at = @At("HEAD"), cancellable = true)
+    private void refillOnSetEmptyItem(ItemStack item, CallbackInfo ci) {
+        if (item == ItemStack.EMPTY || item.is(Items.AIR)) {
+            var self = getThis();
+            if (getExtraItemCount(self) <= 0) return;
+
+            refillItemStack(self);
+            ci.cancel();
         }
     }
 
@@ -106,8 +119,8 @@ public class ItemEntityMixin {
 
         grow(itemEntity, getTotalCount(itemEntity1));
 
-        itemEntity1.setItem(ItemStack.EMPTY);
         setExtraItemCount(itemEntity1, 0);
+        itemEntity1.setItem(ItemStack.EMPTY);
         itemEntity1.discard();
     }
 

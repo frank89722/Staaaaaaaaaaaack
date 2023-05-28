@@ -1,18 +1,10 @@
-buildscript {
-    repositories {
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
-
 plugins {
+    id 'eclipse'
+    id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
 }
 
-apply plugin: 'org.spongepowered.mixin'
 
 group = 'me.frankv'
 version = "${mc_version}-${stxck_version}"
@@ -23,7 +15,7 @@ java {
 }
 
 minecraft {
-    mappings channel: 'official', version: "${mc_version}"
+    mappings channel: 'official', version: mc_version
     runs {
         client {
             workingDirectory project.file('run')
@@ -51,13 +43,14 @@ minecraft {
 
 mixin {
     add sourceSets.main, "staaaaaaaaaaaack.refmap.json"
-    config "saaaaaaaaack.mixins.json"
+    config "staaaaaaaaaaaack.mixins.json"
+    debug.verbose = true
+    debug.export = true
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    mavenCentral()
     exclusiveContent {
         forRepository {
             maven {
@@ -69,17 +62,28 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
+
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-//    runtimeOnly fg.deobf("maven.modrinth:jei:${jei_version}")
-//    runtimeOnly fg.deobf("maven.modrinth:supermartijn642s-core-lib:${supermartincore_forge_version}")
-//    runtimeOnly fg.deobf("maven.modrinth:supermartijn642s-config-lib:${supermartincore_forge_version}")
-//    runtimeOnly fg.deobf("maven.modrinth:supermartijn642s-config-lib:${supermartincore_forge_version}")
-//    runtimeOnly fg.deobf("maven.modrinth:item-collectors:${itemcollectors_forge_version}")
-//    runtimeOnly fg.deobf("maven.modrinth:immersiveengineering:${immersiveengineering_version}")
+//    runtimeOnly fg.deobf("curse.maven:jei:${jei_version}")
+//    runtimeOnly fg.deobf("curse.maven:supermartijn642s-core-lib:${supermartincore_forge_version}")
+//    runtimeOnly fg.deobf("curse.maven:supermartijn642s-config-lib:${supermartincore_forge_version}")
+//    runtimeOnly fg.deobf("curse.maven:supermartijn642s-config-lib:${supermartincore_forge_version}")
+//    runtimeOnly fg.deobf("curse.maven:item-collectors:${itemcollectors_forge_version}")
+//    runtimeOnly fg.deobf("curse.maven:immersiveengineering:${immersiveengineering_version}")
+
+    runtimeOnly fg.deobf("curse.maven:jei-238222:4494410")
+    runtimeOnly fg.deobf("curse.maven:ae2-223794:4548558")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
