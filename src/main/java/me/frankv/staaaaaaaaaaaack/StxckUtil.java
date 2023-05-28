@@ -4,9 +4,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 
 public class StxckUtil {
@@ -63,5 +64,16 @@ public class StxckUtil {
             entity.setCustomNameVisible(false);
         }
         entity.getEntityData().set(DATA_EXTRA_ITEM_COUNT, count);
+    }
+
+    public static boolean tryRefillItemStackOnEntityRemove(Entity entity, Entity.RemovalReason reason) {
+        if (!entity.getType().equals(EntityType.ITEM) || !reason.equals(Entity.RemovalReason.DISCARDED)) return false;
+
+        var itemEntity = (ItemEntity) entity;
+        itemEntity.getItem().setCount(0);
+
+        if (getTotalCount(itemEntity) == 0) return false;
+        refillItemStack(itemEntity);
+        return true;
     }
 }
