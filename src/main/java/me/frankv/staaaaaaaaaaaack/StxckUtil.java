@@ -27,7 +27,7 @@ public class StxckUtil {
 
         stack.grow(refillCount);
         setExtraItemCount(entity, extraItemCount - refillCount);
-        entity.setItem(stack);
+        entity.setItem(stack.copy());
     }
 
     public static boolean areMergable(ItemStack itemStack, ItemStack itemStack1) {
