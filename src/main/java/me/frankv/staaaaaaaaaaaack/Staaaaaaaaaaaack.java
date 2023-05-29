@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 public class Staaaaaaaaaaaack {
     public static final String MODID = "staaaaaaaaaaaack";
     private static final Logger LOGGER = LogUtils.getLogger();
+    public static final StxckConfig config = new StxckConfig();
     public Staaaaaaaaaaaack() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 

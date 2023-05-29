@@ -1,6 +1,5 @@
 package me.frankv.staaaaaaaaaaaack;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -56,13 +55,6 @@ public class StxckUtil {
     }
 
     public static void setExtraItemCount(ItemEntity entity, int count) {
-        if (count > 0) {
-            entity.setCustomName(Component.literal(String.valueOf(entity.getItem().getCount() + count)));
-            entity.setCustomNameVisible(true);
-        } else {
-            entity.setCustomName(null);
-            entity.setCustomNameVisible(false);
-        }
         entity.getEntityData().set(DATA_EXTRA_ITEM_COUNT, count);
     }
 

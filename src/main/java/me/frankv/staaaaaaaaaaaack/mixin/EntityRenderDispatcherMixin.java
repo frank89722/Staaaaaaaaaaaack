@@ -1,16 +1,50 @@
 package me.frankv.staaaaaaaaaaaack.mixin;
 
-import net.minecraft.client.renderer.entity.ItemEntityRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import me.frankv.staaaaaaaaaaaack.ItemCountRenderer;
+import me.frankv.staaaaaaaaaaaack.Staaaaaaaaaaaack;
+import me.frankv.staaaaaaaaaaaack.StxckUtil;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static me.frankv.staaaaaaaaaaaack.StxckUtil.*;
+@Mixin(EntityRenderDispatcher.class)
+public abstract class EntityRenderDispatcherMixin {
+    @Final @Shadow private Font font;
+    @Shadow public abstract Quaternion cameraOrientation();
+    @Shadow public abstract double distanceToSqr(Entity p_114472_);
 
-@Mixin(ItemEntityRenderer.class)
-public class ItemEntityRendererMixin {
+    @Inject(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/renderer/entity/EntityRenderer;render(Lnet/minecraft/world/entity/Entity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
+                    shift = At.Shift.AFTER
+            )
+    )
+    private void renderItemCount(
+            Entity entity, double x, double y, double z,
+            float entityYRotate,
+            float partialTicks,
+            PoseStack poseStack,
+            MultiBufferSource bufferSource,
+            int light,
+            CallbackInfo ci
+    ) {
+        if (distanceToSqr(entity) > Staaaaaaaaaaaack.config.getMinItemCountRenderDistance()) return;
+        if (entity instanceof ItemEntity itemEntity) {
+            ItemCountRenderer.renderItemCount(itemEntity, poseStack, bufferSource, light, font, cameraOrientation());
+        }
+    }
 //
 //    @ModifyVariable(
 //            method = "render(Lnet/minecraft/world/entity/item/ItemEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
