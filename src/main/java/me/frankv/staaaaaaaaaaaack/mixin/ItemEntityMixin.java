@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -44,12 +43,6 @@ public class ItemEntityMixin {
     private void defineSynchedDataForExtraItemCount(CallbackInfo ci) {
         getThis().getEntityData().define(DATA_EXTRA_ITEM_COUNT, 0);
     }
-
-    @Redirect(
-            method = "playerTouch",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;setCount(I)V")
-    )
-    private void cancelPlayerTouchSetCount(ItemStack instance, int p_41765_) {}
 
     @Inject(
             method = "tick",
