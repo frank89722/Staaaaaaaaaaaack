@@ -5,7 +5,6 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "staaaaaaaaaaaack.refmap.json",
   "mixins": [
-    "EntityMixin",
     "ItemEntityAccessor",
     "ItemEntityMixin"
   ],

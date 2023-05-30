@@ -1,16 +1,23 @@
 package me.frankv.staaaaaaaaaaaack;
 
+import me.frankv.staaaaaaaaaaaack.mixin.ItemEntityAccessor;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Objects;
+
 
 public class StxckUtil {
-    public static final EntityDataAccessor<Integer> DATA_EXTRA_ITEM_COUNT = SynchedEntityData.defineId(ItemEntity.class, EntityDataSerializers.INT);
+    public static final String EXTRA_ITEM_COUNT_TAG = "StxckExtraItemCount";
+    private static EntityDataAccessor<Integer> DATA_EXTRA_ITEM_COUNT;
+
+    public static void setDataExtraItemCount(EntityDataAccessor<Integer> entityDataAccessor) {
+        if (DATA_EXTRA_ITEM_COUNT != null) return;
+        DATA_EXTRA_ITEM_COUNT = entityDataAccessor;
+    }
 
     public static void refillItemStack(ItemEntity entity) {
         var extraItemCount = getExtraItemCount(entity);
@@ -46,6 +53,13 @@ public class StxckUtil {
         refillItemStack(entity);
     }
 
+    public static boolean isMergable(ItemEntity entity) {
+        var accessor = (ItemEntityAccessor) entity;
+        var pickupDelay = accessor.getPickupDelay();
+        var age = accessor.getAge();
+        return entity.isAlive() && pickupDelay != 32767 && age != -32768 && age < 6000;
+    }
+
     public static int getTotalCount(ItemEntity entity) {
         return entity.getItem().getCount() + getExtraItemCount(entity);
     }
@@ -67,5 +81,32 @@ public class StxckUtil {
         if (getTotalCount(itemEntity) == 0) return false;
         refillItemStack(itemEntity);
         return true;
+    }
+
+    public static boolean tryToMerge(ItemEntity itemEntity, ItemEntity itemEntity1) {
+        if (Objects.equals(itemEntity.getOwner(), itemEntity1.getOwner())
+                && areMergable(itemEntity.getItem(), itemEntity1.getItem())) {
+            if (getTotalCount(itemEntity1) < getTotalCount(itemEntity)) {
+                merge(itemEntity, itemEntity1);
+            } else {
+                merge(itemEntity1, itemEntity);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static void merge(ItemEntity itemEntity, ItemEntity itemEntity1) {
+        var entityAccessor = (ItemEntityAccessor) itemEntity;
+        var entityAccessor1 = (ItemEntityAccessor) itemEntity1;
+
+        entityAccessor.setPickupDelay(Math.max(entityAccessor.getPickupDelay(), entityAccessor1.getPickupDelay()));
+        entityAccessor.setAge(Math.min(entityAccessor.getAge(), entityAccessor1.getAge()));
+
+        grow(itemEntity, getTotalCount(itemEntity1));
+
+        setExtraItemCount(itemEntity1, 0);
+        itemEntity1.setItem(ItemStack.EMPTY);
+        itemEntity1.discard();
     }
 }

@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 
 import static me.frankv.staaaaaaaaaaaack.StxckUtil.getTotalCount;
+
 public class ItemCountRenderer {
     public static void renderItemCount(
             ItemEntity entity,

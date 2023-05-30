@@ -1,32 +1,43 @@
 package me.frankv.staaaaaaaaaaaack.mixin;
 
 import me.frankv.staaaaaaaaaaaack.Staaaaaaaaaaaack;
-import me.frankv.staaaaaaaaaaaack.StxckConfig;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Objects;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static me.frankv.staaaaaaaaaaaack.StxckUtil.*;
 
+@ParametersAreNonnullByDefault
 @Mixin(ItemEntity.class)
-public class ItemEntityMixin {
-    private static final String EXTRA_ITEM_TAG = "ExtraItemCount";
-    private static final StxckConfig config = Staaaaaaaaaaaack.config;
+public abstract class ItemEntityMixin extends Entity {
+    @Unique
+    private static final EntityDataAccessor<Integer> STXCK_DATA_EXTRA_ITEM_COUNT;
 
-    @Shadow private int pickupDelay;
-    @Shadow private int age;
+    static {
+        STXCK_DATA_EXTRA_ITEM_COUNT = SynchedEntityData.defineId(ItemEntityMixin.class, EntityDataSerializers.INT);
+        setDataExtraItemCount(STXCK_DATA_EXTRA_ITEM_COUNT);
+    }
 
+    public ItemEntityMixin(EntityType<?> p_19870_, Level p_19871_) {
+        super(p_19870_, p_19871_);
+    }
 
     @Inject(
             method = "<init>(Lnet/minecraft/world/entity/item/ItemEntity;)V",
@@ -46,7 +57,7 @@ public class ItemEntityMixin {
 
     @Inject(method = "defineSynchedData", at = @At("RETURN"))
     private void defineSynchedDataForExtraItemCount(CallbackInfo ci) {
-        getThis().getEntityData().define(DATA_EXTRA_ITEM_COUNT, 0);
+        getThis().getEntityData().define(STXCK_DATA_EXTRA_ITEM_COUNT, 0);
     }
 
     @Inject(
@@ -63,22 +74,12 @@ public class ItemEntityMixin {
 
     @Inject(method = "isMergable", at = @At("HEAD"), cancellable = true)
     private void replaceIsMergable(CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue(getThis().isAlive() && pickupDelay != 32767 && age != -32768 && age < 6000);
+        cir.setReturnValue(isMergable(getThis()));
     }
 
     @Inject(method = "tryToMerge", at = @At("HEAD"), cancellable = true)
     private void replaceTryToMerge(ItemEntity itemEntity1, CallbackInfo ci) {
-        var itemEntity = getThis();
-
-        if (Objects.equals(itemEntity.getOwner(), itemEntity1.getOwner())
-                && areMergable(itemEntity.getItem(), itemEntity1.getItem())) {
-            if (getTotalCount(itemEntity1) < getTotalCount(itemEntity)) {
-                merge(itemEntity, itemEntity1);
-            } else {
-                merge(itemEntity1, itemEntity);
-            }
-        }
-
+        tryToMerge(getThis(), itemEntity1);
         ci.cancel();
     }
 
@@ -91,8 +92,8 @@ public class ItemEntityMixin {
             index = 1
     )
     private AABB mergeWithNeighbours(AABB uwu) {
-        var h = config.getMaxMergeDistanceHorizontal();
-        var v = config.getMaxMergeDistanceVerital();
+        var h = Staaaaaaaaaaaack.config.getMaxMergeDistanceHorizontal();
+        var v = Staaaaaaaaaaaack.config.getMaxMergeDistanceVerital();
         return getThis().getBoundingBox().inflate(h, v, h);
     }
 
@@ -100,14 +101,14 @@ public class ItemEntityMixin {
     private void saveExtraItemCount(CompoundTag compoundTag, CallbackInfo ci) {
         var self = getThis();
         if (getExtraItemCount(self) > 0) {
-            compoundTag.putInt(EXTRA_ITEM_TAG, getExtraItemCount(self));
+            compoundTag.putInt(EXTRA_ITEM_COUNT_TAG, getExtraItemCount(self));
         }
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
     private void readExtraItemCount(CompoundTag compoundTag, CallbackInfo ci) {
-        if (compoundTag.contains(EXTRA_ITEM_TAG)) {
-            setExtraItemCount(getThis(), compoundTag.getInt(EXTRA_ITEM_TAG));
+        if (compoundTag.contains(EXTRA_ITEM_COUNT_TAG)) {
+            setExtraItemCount(getThis(), compoundTag.getInt(EXTRA_ITEM_COUNT_TAG));
         }
     }
 
@@ -122,18 +123,10 @@ public class ItemEntityMixin {
         }
     }
 
-    private static void merge(ItemEntity itemEntity, ItemEntity itemEntity1) {
-        var entityAccessor = (ItemEntityAccessor) itemEntity;
-        var entityAccessor1 = (ItemEntityAccessor) itemEntity1;
-
-        entityAccessor.setPickupDelay(Math.max(entityAccessor.getPickupDelay(), entityAccessor1.getPickupDelay()));
-        entityAccessor.setAge(Math.min(entityAccessor.getAge(), entityAccessor1.getAge()));
-
-        grow(itemEntity, getTotalCount(itemEntity1));
-
-        setExtraItemCount(itemEntity1, 0);
-        itemEntity1.setItem(ItemStack.EMPTY);
-        itemEntity1.discard();
+    @Override
+    public void remove(RemovalReason reason) {
+        if (tryRefillItemStackOnEntityRemove(getThis(), reason)) return;
+        super.remove(reason);
     }
 
     private ItemEntity getThis() {
