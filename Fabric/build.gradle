@@ -6,8 +6,6 @@ plugins {
     id "com.modrinth.minotaur" version "2.+"
 }
 
-def ENV = System.getenv()
-
 archivesBaseName = "${mod_id}-fabric"
 
 repositories {
@@ -77,6 +75,9 @@ publishing {
     }
 }
 
+def ENV = System.getenv()
+def release_title = "[Fabric] v${version}"
+
 if (ENV.CF_TOKEN) {
     curseforge {
         apiKey = ENV.CF_TOKEN
@@ -89,7 +90,9 @@ if (ENV.CF_TOKEN) {
             addGameVersion "Server"
             addGameVersion "Client"
             addGameVersion minecraft_version
-            mainArtifact(remapJar.archivePath)
+            mainArtifact(remapJar.archivePath) {
+                it.displayName = release_title
+            }
             changelog = rootProject.file('changelog.md')
             changelogType = 'markdown'
 
@@ -106,7 +109,7 @@ if (ENV.MODRINTH_TOKEN) {
         token = ENV.MODRINTH_TOKEN
         projectId = modrinth_id
         versionType = release_type
-        versionName = "[Fabric] v${version}"
+        versionName = release_title
         versionNumber = version
         uploadFile = remapJar
         gameVersions = [ minecraft_version ]
