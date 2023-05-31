@@ -8,7 +8,7 @@ plugins {
 
 def ENV = System.getenv()
 
-archivesBaseName = "${mod_id}-fabric-${minecraft_version}"
+archivesBaseName = "${mod_id}-fabric"
 
 repositories {
     maven { url "https://maven.shedaniel.me/" }
@@ -81,11 +81,14 @@ if (ENV.CF_TOKEN) {
     curseforge {
         apiKey = ENV.CF_TOKEN
         project {
-            id = "${curse_id}"
-            releaseType = "${release_type}"
+            id = curse_id
+            releaseType = release_type
             addGameVersion "Fabric"
             addGameVersion "Quilt"
-            addGameVersion "${minecraft_version}"
+            addGameVersion "Java 17"
+            addGameVersion "Server"
+            addGameVersion "Client"
+            addGameVersion minecraft_version
             mainArtifact(remapJar.archivePath)
             changelog = rootProject.file('changelog.md')
             changelogType = 'markdown'
@@ -103,6 +106,7 @@ if (ENV.MODRINTH_TOKEN) {
         token = ENV.MODRINTH_TOKEN
         projectId = modrinth_id
         versionType = release_type
+        versionName = "[Fabric] v${version}"
         versionNumber = version
         uploadFile = remapJar
         gameVersions = [ minecraft_version ]
