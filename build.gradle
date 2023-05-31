@@ -1,110 +1,65 @@
-plugins {
-    id 'eclipse'
-    id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '5.1.+'
-    id 'org.spongepowered.mixin' version '0.7.+'
-}
 
+subprojects {
+    apply plugin: 'java'
+    
+    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-group = 'me.frankv'
-version = "${stxck_version}-dev"
+    def ENV = System.getenv()
+    version = "${base_version}-${ENV.GITHUB_RUN_NUMBER ?: 'dev'}"
 
-java {
-    archivesBaseName = "${mod_id}-forge-${mc_version}"
-    toolchain.languageVersion = JavaLanguageVersion.of(17)
-}
+    jar {
+        manifest {
+            attributes([
+                'Specification-Title'     : mod_name,
+                'Specification-Vendor'    : mod_author,
+                'Specification-Version'   : project.jar.archiveVersion,
+                'Implementation-Title'    : project.name,
+                'Implementation-Version'  : project.jar.archiveVersion,
+                'Implementation-Vendor'   : mod_author,
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                'Timestampe'              : System.currentTimeMillis(),
+                'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
+                'Build-On-Minecraft'      : minecraft_version,
+                'MixinConfigs'            : "${mod_id}.mixins.json"
+            ])
+        }
+    }
+    
+    repositories {
+        mavenCentral()
 
-minecraft {
-    mappings channel: 'official', version: mc_version
-    runs {
-        client {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                mod_id {
-                    source sourceSets.main
-                }
+        maven {
+            name = 'Sponge / Mixin'
+            url = 'https://repo.spongepowered.org/repository/maven-public/'
+        }
+
+        maven {
+            name = "Modrinth"
+            url = "https://api.modrinth.com/maven"
+            content {
+                includeGroup "maven.modrinth"
             }
         }
-
-        server {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                mod_id {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
-}
-
-mixin {
-    add sourceSets.main, "${mod_id}.refmap.json"
-    config "${mod_id}.mixins.json"
-    debug.verbose = true
-    debug.export = true
-}
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-repositories {
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "Modrinth"
-                url = "https://api.modrinth.com/maven"
-            }
-        }
-        filter {
-            includeGroup "maven.modrinth"
-        }
     }
 
-    maven {
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
+    dependencies {
+        compileOnly "org.projectlombok:lombok:${project.lombok_version}"
+        annotationProcessor "org.projectlombok:lombok:${project.lombok_version}"
+        testCompileOnly "org.projectlombok:lombok:${project.lombok_version}"
+        testAnnotationProcessor "org.projectlombok:lombok:${project.lombok_version}"
     }
 
-}
-
-dependencies {
-    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-
-//    runtimeOnly fg.deobf("curse.maven:jei:${jei_version}")
-//    runtimeOnly fg.deobf("curse.maven:supermartijn642s-core-lib:${supermartincore_forge_version}")
-//    runtimeOnly fg.deobf("curse.maven:supermartijn642s-config-lib:${supermartincore_forge_version}")
-//    runtimeOnly fg.deobf("curse.maven:supermartijn642s-config-lib:${supermartincore_forge_version}")
-//    runtimeOnly fg.deobf("curse.maven:item-collectors:${itemcollectors_forge_version}")
-//    runtimeOnly fg.deobf("curse.maven:immersiveengineering:${immersiveengineering_version}")
-
-    runtimeOnly fg.deobf("curse.maven:jei-238222:4494410")
-    runtimeOnly fg.deobf("curse.maven:ae2-223794:4548558")
-
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-}
-
-jar {
-    manifest {
-        attributes([
-                "Specification-Title": "${mod_name}",
-                "Specification-Vendor": "frankV",
-                "Specification-Version": "1",
-                "Implementation-Title": project.name,
-                "Implementation-Version": project.jar.archiveVersion,
-                "Implementation-Vendor": "frankV",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs": "${mod_id}.mixins.json"
-        ])
+    tasks.withType(JavaCompile).configureEach {
+    
+        it.options.encoding = 'UTF-8'
+        it.options.release = 17
     }
-}
 
-jar.finalizedBy('reobfJar')
+    // Disables Gradle's custom module metadata from being published to maven. The
+    // metadata includes mapped dependencies which are not reasonably consumable by
+    // other mod developers.
+    tasks.withType(GenerateModuleMetadata) {
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+        enabled = false
+    }
 }

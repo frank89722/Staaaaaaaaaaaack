@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.frankv.staaaaaaaaaaaack.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ItemEntityAccessor",
+    "ItemEntityMixin",
+    "PersistentEntitySectionManagerMixin"
+  ],
+  "client": [
+    "ClientPacketListenerMixin",
+    "EntityRenderDispatcherMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

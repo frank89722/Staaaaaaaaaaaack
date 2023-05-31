@@ -1,0 +1,35 @@
+{
+    "schemaVersion": 1,
+    "id": "staaaaaaaaaaaack",
+    "version": "${version}",
+  
+    "name": "Staaaaaaaaaaaack",
+    "description": "Drops are merged!",
+    "authors": [
+      "frankV"
+    ],
+    "contact": {
+      "homepage": "https://modrinth.com/mod/staaaaaaaaaaaack",
+      "sources": "https://github.com/frank89722/Staaaaaaaaaaaack"
+    },
+  
+    "license": "MIT",
+    "icon": "logo.png",
+  
+    "environment": "*",
+    "entrypoints": {
+      "main": [
+        "me.frankv.staaaaaaaaaaaack.Staaaaaaaaaaaack"
+      ]
+    },
+    "mixins": [
+      "staaaaaaaaaaaack.mixins.json"
+    ],
+  
+    "depends": {
+      "fabricloader": ">=0.13",
+      "minecraft": "1.19.2",
+      "java": ">=17"
+    }
+  }
+  

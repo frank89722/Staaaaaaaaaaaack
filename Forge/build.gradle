@@ -1,0 +1,148 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7.+'
+    }
+}
+
+plugins {
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id "com.modrinth.minotaur" version "2.+"
+}
+
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
+
+def ENV = System.getenv()
+
+archivesBaseName = "${mod_id}-forge-${minecraft_version}"
+
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            taskName 'Client'
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                modClientRun {
+                    source sourceSets.main
+                    source project(":Common").sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            taskName 'Server'
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                modServerRun {
+                    source sourceSets.main
+                    source project(":Common").sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            taskName 'Data'
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                modDataRun {
+                    source sourceSets.main
+                    source project(":Common").sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+
+    implementation project(":Common")
+}
+
+mixin {
+    add project(":Common").sourceSets.main, "${mod_id}.refmap.json"
+    config "${mod_id}.mixins.json"
+
+    debug.verbose = true
+    debug.export = true
+    dumpTargetOnFailure = true
+
+    quiet
+}
+
+tasks.withType(JavaCompile) {
+    source(project(":Common").sourceSets.main.allSource)
+}
+
+processResources {
+    from project(":Common").sourceSets.main.resources
+}
+
+jar.finalizedBy('reobfJar')
+
+if (ENV.CF_TOKEN) {
+    curseforge {
+        apiKey = ENV.CF_TOKEN
+        project {
+            id = curse_id
+            releaseType = release_type
+            addGameVersion "Forge"
+            addGameVersion minecraft_version
+            mainArtifact(jar)
+            changelog = rootProject.file('changelog.md')
+            changelogType = 'markdown'
+        }
+    }
+}
+
+if (ENV.MODRINTH_TOKEN) {
+    modrinth {
+        token = ENV.MODRINTH_TOKEN
+        projectId = modrinth_id
+        versionType = release_type
+        versionNumber = version
+        uploadFile = jar
+        gameVersions = [ minecraft_version ]
+        changelog = rootProject.file('changelog.md').text
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
+        }
+    }
+}
