@@ -8,11 +8,13 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
-
+import java.util.function.BiPredicate;
 
 public class StxckUtil {
     public static final String EXTRA_ITEM_COUNT_TAG = "StxckExtraItemCount";
     private static EntityDataAccessor<Integer> DATA_EXTRA_ITEM_COUNT;
+    public static BiPredicate<ItemStack, ItemStack> itemStackMergablePredicate = null;
+
 
     public static void setDataExtraItemCount(EntityDataAccessor<Integer> entityDataAccessor) {
         if (DATA_EXTRA_ITEM_COUNT != null) return;
@@ -37,15 +39,17 @@ public class StxckUtil {
     }
 
     public static boolean areMergable(ItemStack itemStack, ItemStack itemStack1) {
+        if (itemStackMergablePredicate != null) {
+            return itemStackMergablePredicate.test(itemStack, itemStack1);
+        }
+
         if (!itemStack1.is(itemStack.getItem())) {
             return false;
-        } else if (itemStack1.hasTag() ^ itemStack.hasTag()) {
-            return false;
-//        } else if (!itemStack.areCapsCompatible(itemStack1)) {
-//            return false;
-        } else {
-            return !itemStack1.hasTag() || itemStack1.getTag().equals(itemStack.getTag());
         }
+        if (itemStack1.hasTag() ^ itemStack.hasTag()) {
+            return false;
+        }
+        return !itemStack1.hasTag() || Objects.equals(itemStack1.getTag(), itemStack.getTag());
     }
 
     public static void grow(ItemEntity entity, int count) {
