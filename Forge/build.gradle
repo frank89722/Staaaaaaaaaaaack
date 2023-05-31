@@ -19,8 +19,6 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 
-def ENV = System.getenv()
-
 archivesBaseName = "${mod_id}-forge"
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
@@ -107,12 +105,16 @@ processResources {
 
 jar.finalizedBy('reobfJar')
 
+def ENV = System.getenv()
+def release_title = "[Forge] v${version}"
+
 if (ENV.CF_TOKEN) {
     curseforge {
         apiKey = ENV.CF_TOKEN
         project {
             id = curse_id
             releaseType = release_type
+            displayName = release_title
             addGameVersion "Forge"
             addGameVersion "Java 17"
             addGameVersion "Server"
@@ -130,7 +132,7 @@ if (ENV.MODRINTH_TOKEN) {
         token = ENV.MODRINTH_TOKEN
         projectId = modrinth_id
         versionType = release_type
-        versionName = "[Forge] v${version}"
+        versionName = release_title
         versionNumber = version
         uploadFile = jar
         gameVersions = [ minecraft_version ]
