@@ -5,7 +5,7 @@ name: Build and upload
 
 on:
   push:
-    branches: [ release/1.19.2 ]
+    branches: [ 1.19.2/release ]
 
 jobs:
   build:
