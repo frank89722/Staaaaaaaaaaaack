@@ -114,13 +114,14 @@ if (ENV.CF_TOKEN) {
         project {
             id = curse_id
             releaseType = release_type
-            displayName = release_title
             addGameVersion "Forge"
             addGameVersion "Java 17"
             addGameVersion "Server"
             addGameVersion "Client"
             addGameVersion minecraft_version
-            mainArtifact(jar)
+            mainArtifact(jar) {
+                it.displayName = release_title
+            }
             changelog = rootProject.file('changelog.md')
             changelogType = 'markdown'
         }

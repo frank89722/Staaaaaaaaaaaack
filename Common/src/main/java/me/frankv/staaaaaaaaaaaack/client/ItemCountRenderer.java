@@ -22,7 +22,7 @@ public class ItemCountRenderer {
         var itemCount = getTotalCount(entity);
         if (itemCount <= entity.getItem().getMaxStackSize()) return;
 
-        var component = Component.literal(String.valueOf(itemCount));
+        var component = Component.nullToEmpty(String.valueOf(itemCount));
 
         poseStack.pushPose();
         poseStack.translate(0.0D, entity.getBbHeight() + 0.75f, 0.0D);

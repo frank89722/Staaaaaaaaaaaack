@@ -1,8 +1,7 @@
 package me.frankv.staaaaaaaaaaaack;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.common.Mod;
 
@@ -24,7 +23,7 @@ public class Staaaaaaaaaaaack {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onEntityJoinLevel);
     }
 
-    private void onEntityJoinLevel(EntityJoinLevelEvent event) {
+    private void onEntityJoinLevel(EntityJoinWorldEvent event) {
         EventHandler.onEntityCreate(event.getEntity(), () -> event.setCanceled(true));
     }
 }

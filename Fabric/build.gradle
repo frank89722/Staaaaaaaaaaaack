@@ -16,7 +16,7 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+//    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation project(":Common")
 }
@@ -84,14 +84,15 @@ if (ENV.CF_TOKEN) {
         project {
             id = curse_id
             releaseType = release_type
-            displayName = release_title
             addGameVersion "Fabric"
             addGameVersion "Quilt"
             addGameVersion "Java 17"
             addGameVersion "Server"
             addGameVersion "Client"
             addGameVersion minecraft_version
-            mainArtifact(remapJar.archivePath)
+            mainArtifact(remapJar.archivePath) {
+                it.displayName = release_title
+            }
             changelog = rootProject.file('changelog.md')
             changelogType = 'markdown'
 
