@@ -10,7 +10,8 @@
   ],
   "client": [
     "ClientPacketListenerMixin",
-    "EntityRenderDispatcherMixin"
+    "EntityRenderDispatcherMixin",
+    "EntityRenderDispatcherAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
