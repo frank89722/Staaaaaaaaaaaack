@@ -1,26 +1,19 @@
 package me.frankv.staaaaaaaaaaaack.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
 import me.frankv.staaaaaaaaaaaack.client.ItemCountRenderer;
 import me.frankv.staaaaaaaaaaaack.StxckCommon;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderDispatcher.class)
 public abstract class EntityRenderDispatcherMixin {
-    @Final @Shadow private Font font;
-    @Shadow public abstract Quaternion cameraOrientation();
-    @Shadow public abstract double distanceToSqr(Entity p_114472_);
 
     @Inject(
             method = "render",
@@ -39,10 +32,22 @@ public abstract class EntityRenderDispatcherMixin {
             int light,
             CallbackInfo ci
     ) {
-        if (distanceToSqr(entity) > StxckCommon.clientConfig.getMinItemCountRenderDistance()) return;
+        var accessor = (EntityRenderDispatcherAccessor) getSelf();
+        if (accessor.invokeDistanceToSqr(entity) > StxckCommon.clientConfig.getMinItemCountRenderDistance()) return;
         if (entity instanceof ItemEntity itemEntity) {
-            ItemCountRenderer.renderItemCount(itemEntity, poseStack, bufferSource, light, font, cameraOrientation());
+            ItemCountRenderer.renderItemCount(
+                    itemEntity,
+                    poseStack,
+                    bufferSource,
+                    light,
+                    accessor.getFont(),
+                    accessor.getCameraOrientation()
+            );
         }
+    }
+
+    private EntityRenderDispatcher getSelf() {
+        return (EntityRenderDispatcher) (Object) this;
     }
 //
 //    @ModifyVariable(
