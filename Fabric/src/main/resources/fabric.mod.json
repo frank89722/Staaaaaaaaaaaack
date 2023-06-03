@@ -20,6 +20,9 @@
     "entrypoints": {
       "main": [
         "me.frankv.staaaaaaaaaaaack.Staaaaaaaaaaaack"
+      ],
+      "client": [
+        "me.frankv.staaaaaaaaaaaack.Staaaaaaaaaaaack"
       ]
     },
     "mixins": [

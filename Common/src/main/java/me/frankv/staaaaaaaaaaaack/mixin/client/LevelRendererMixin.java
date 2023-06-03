@@ -29,7 +29,8 @@ public abstract class LevelRendererMixin {
     ) {
         var entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         var accessor = (EntityRenderDispatcherAccessor) entityRenderDispatcher;
-        if (accessor.invokeDistanceToSqr(entity) > StxckCommon.clientConfig.getMinItemCountRenderDistance()) return;
+        var maxDistance = StxckCommon.clientConfig.getMinItemCountRenderDistance();
+        if (accessor.invokeDistanceToSqr(entity) > maxDistance * maxDistance) return;
         if (entity instanceof ItemEntity itemEntity) {
             var offset = entityRenderDispatcher.getRenderer(entity).getRenderOffset(entity, partialTicks);
             var light = entityRenderDispatcher.getPackedLightCoords(entity, partialTicks);

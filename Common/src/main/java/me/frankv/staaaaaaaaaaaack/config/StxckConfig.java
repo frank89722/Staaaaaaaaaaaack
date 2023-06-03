@@ -2,24 +2,19 @@ package me.frankv.staaaaaaaaaaaack.config;
 
 
 public class StxckConfig implements StxckCommonConfig, StxckClientConfig {
-    private int minItemCountRenderDistance = 8;
-
-    private float maxMergeDistanceHorizontal = 1.25f;
-
-    private float maxMergeDistanceVertical = 0f;
 
     @Override
     public int getMinItemCountRenderDistance() {
-        return minItemCountRenderDistance * minItemCountRenderDistance;
+        return 8;
     }
 
     @Override
-    public float getMaxMergeDistanceHorizontal() {
-        return maxMergeDistanceHorizontal;
+    public double getMaxMergeDistanceHorizontal() {
+        return 1.25d;
     }
 
     @Override
-    public float getMaxMergeDistanceVertical() {
-        return maxMergeDistanceVertical;
+    public double getMaxMergeDistanceVertical() {
+        return 0d;
     }
 }
