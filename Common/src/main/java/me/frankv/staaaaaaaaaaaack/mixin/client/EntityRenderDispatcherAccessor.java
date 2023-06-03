@@ -1,4 +1,4 @@
-package me.frankv.staaaaaaaaaaaack.mixin;
+package me.frankv.staaaaaaaaaaaack.mixin.client;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.world.entity.Entity;

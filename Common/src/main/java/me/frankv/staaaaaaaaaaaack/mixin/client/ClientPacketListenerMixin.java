@@ -1,4 +1,4 @@
-package me.frankv.staaaaaaaaaaaack.mixin;
+package me.frankv.staaaaaaaaaaaack.mixin.client;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -23,7 +23,6 @@ public class ClientPacketListenerMixin {
     private void handleRemoveItemEntity(ClientLevel instance, int entityId, Entity.RemovalReason reason) {
         var entity = getThis().getLevel().getEntity(entityId);
         if (entity == null || tryRefillItemStackOnEntityRemove(entity, reason)) return;
-
         getThis().getLevel().removeEntity(entityId, reason);
     }
 

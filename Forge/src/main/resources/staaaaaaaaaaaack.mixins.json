@@ -9,9 +9,9 @@
     "ItemEntityMixin"
   ],
   "client": [
-    "ClientPacketListenerMixin",
-    "EntityRenderDispatcherMixin",
-    "EntityRenderDispatcherAccessor"
+    "client.ClientPacketListenerMixin",
+    "client.LevelRendererMixin",
+    "client.EntityRenderDispatcherAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

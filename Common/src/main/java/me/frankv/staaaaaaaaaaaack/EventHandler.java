@@ -24,8 +24,8 @@ public class EventHandler {
                 (she) -> itemEntity != she && isMergable(she)
         );
 
-        for(ItemEntity itementity : nearByEntities) {
-            tryToMerge(itementity, itemEntity);
+        for(var nearByEntity : nearByEntities) {
+            tryToMerge(nearByEntity, itemEntity);
             if (itemEntity.isRemoved()) {
                 eventCanceller.run();
                 break;
