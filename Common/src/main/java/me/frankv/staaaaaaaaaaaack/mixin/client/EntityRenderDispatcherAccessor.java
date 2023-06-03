@@ -1,4 +1,4 @@
-package me.frankv.staaaaaaaaaaaack.mixin;
+package me.frankv.staaaaaaaaaaaack.mixin.client;
 
 import com.mojang.math.Quaternion;
 import net.minecraft.client.gui.Font;
