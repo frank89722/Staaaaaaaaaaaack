@@ -6,7 +6,8 @@
   "refmap": "staaaaaaaaaaaack.refmap.json",
   "mixins": [
     "ItemEntityAccessor",
-    "ItemEntityMixin"
+    "ItemEntityMixin",
+    "ItemStackAccessor"
   ],
   "client": [
     "client.ClientPacketListenerMixin",
