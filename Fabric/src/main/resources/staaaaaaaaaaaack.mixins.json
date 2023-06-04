@@ -6,7 +6,8 @@
   "mixins": [
     "ItemEntityAccessor",
     "ItemEntityMixin",
-    "PersistentEntitySectionManagerMixin"
+    "PersistentEntitySectionManagerMixin",
+    "ItemStackAccessor"
   ],
   "client": [
     "client.ClientPacketListenerMixin",
