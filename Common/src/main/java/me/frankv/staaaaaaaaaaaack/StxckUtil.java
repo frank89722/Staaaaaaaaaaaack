@@ -14,6 +14,7 @@ import java.util.function.BiPredicate;
 public class StxckUtil {
     public static final String EXTRA_ITEM_COUNT_TAG = "StxckExtraItemCount";
     private static EntityDataAccessor<Integer> DATA_EXTRA_ITEM_COUNT;
+
     public static BiPredicate<ItemStack, ItemStack> itemStackMergablePredicate = null;
 
 
@@ -113,5 +114,11 @@ public class StxckUtil {
         setExtraItemCount(itemEntity1, 0);
         itemEntity1.setItem(ItemStack.EMPTY);
         itemEntity1.discard();
+    }
+
+    public static boolean isBlackListItem(ItemStack itemStack) {
+        return (!Staaaaaaaaaaaack.commonConfig.isEnableForUnstackableItem() && itemStack.getMaxStackSize() == 1)
+                || (itemStack.is(Staaaaaaaaaaaack.BLACK_LIST_TAG)
+                || Staaaaaaaaaaaack.getItemBlackList().contains(itemStack.getItem()));
     }
 }

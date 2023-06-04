@@ -2,7 +2,7 @@ package me.frankv.staaaaaaaaaaaack.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.frankv.staaaaaaaaaaaack.client.ItemCountRenderer;
-import me.frankv.staaaaaaaaaaaack.StxckCommon;
+import me.frankv.staaaaaaaaaaaack.Staaaaaaaaaaaack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -29,7 +29,7 @@ public abstract class LevelRendererMixin {
     ) {
         var entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         var accessor = (EntityRenderDispatcherAccessor) entityRenderDispatcher;
-        var maxDistance = StxckCommon.clientConfig.getMinItemCountRenderDistance();
+        var maxDistance = Staaaaaaaaaaaack.clientConfig.getMinItemCountRenderDistance();
         if (accessor.invokeDistanceToSqr(entity) > maxDistance * maxDistance) return;
         if (entity instanceof ItemEntity itemEntity) {
             var offset = entityRenderDispatcher.getRenderer(entity).getRenderOffset(entity, partialTicks);
