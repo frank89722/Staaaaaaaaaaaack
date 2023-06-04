@@ -11,6 +11,7 @@ public class StxckForgeClientConfig implements StxckClientConfig {
 
         minItemCountRenderDistance = builder
                 .comment("The maximum distance between you and the drops to display its count.")
+                .comment("Default: 8")
                 .defineInRange("minItemCountRenderDistance", 8, 0, 128);
 
         builder.pop();

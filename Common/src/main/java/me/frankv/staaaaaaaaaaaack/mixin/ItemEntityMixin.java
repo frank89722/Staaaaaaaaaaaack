@@ -1,6 +1,6 @@
 package me.frankv.staaaaaaaaaaaack.mixin;
 
-import me.frankv.staaaaaaaaaaaack.StxckCommon;
+import me.frankv.staaaaaaaaaaaack.Staaaaaaaaaaaack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -30,14 +30,16 @@ public abstract class ItemEntityMixin extends Entity {
     @Unique
     private static final EntityDataAccessor<Integer> STXCK_DATA_EXTRA_ITEM_COUNT;
 
+
     static {
         STXCK_DATA_EXTRA_ITEM_COUNT = SynchedEntityData.defineId(ItemEntityMixin.class, EntityDataSerializers.INT);
         setDataExtraItemCount(STXCK_DATA_EXTRA_ITEM_COUNT);
     }
 
-    public ItemEntityMixin(EntityType<?> p_19870_, Level p_19871_) {
-        super(p_19870_, p_19871_);
+    public ItemEntityMixin(EntityType<?> entityType, Level level) {
+        super(entityType, level);
     }
+
 
     @Inject(
             method = "<init>(Lnet/minecraft/world/entity/item/ItemEntity;)V",
@@ -74,6 +76,9 @@ public abstract class ItemEntityMixin extends Entity {
 
     @Inject(method = "isMergable", at = @At("HEAD"), cancellable = true)
     private void replaceIsMergable(CallbackInfoReturnable<Boolean> cir) {
+        var itemStack = getThis().getItem();
+        if ((!Staaaaaaaaaaaack.commonConfig.isEnableForUnstackableItem() && itemStack.getMaxStackSize() == 1)
+                || isBlackListItem(itemStack)) return;
         cir.setReturnValue(isMergable(getThis()));
     }
 
@@ -92,8 +97,8 @@ public abstract class ItemEntityMixin extends Entity {
             index = 1
     )
     private AABB mergeWithNeighbours(AABB uwu) {
-        var h = StxckCommon.commonConfig.getMaxMergeDistanceHorizontal();
-        var v = StxckCommon.commonConfig.getMaxMergeDistanceVertical();
+        var h = Staaaaaaaaaaaack.commonConfig.getMaxMergeDistanceHorizontal();
+        var v = Staaaaaaaaaaaack.commonConfig.getMaxMergeDistanceVertical();
         return getThis().getBoundingBox().inflate(h, v, h);
     }
 

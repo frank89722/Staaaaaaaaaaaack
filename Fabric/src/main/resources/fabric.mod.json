@@ -19,10 +19,10 @@
     "environment": "*",
     "entrypoints": {
       "main": [
-        "me.frankv.staaaaaaaaaaaack.Staaaaaaaaaaaack"
+        "me.frankv.staaaaaaaaaaaack.StxckFabricInitializer"
       ],
       "client": [
-        "me.frankv.staaaaaaaaaaaack.Staaaaaaaaaaaack"
+        "me.frankv.staaaaaaaaaaaack.StxckFabricInitializer"
       ]
     },
     "mixins": [

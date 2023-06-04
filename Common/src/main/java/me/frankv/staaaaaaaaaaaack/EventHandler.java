@@ -4,23 +4,23 @@ import me.frankv.staaaaaaaaaaaack.config.StxckCommonConfig;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 
-import java.util.function.Function;
-
-import static me.frankv.staaaaaaaaaaaack.StxckUtil.isMergable;
-import static me.frankv.staaaaaaaaaaaack.StxckUtil.tryToMerge;
+import static me.frankv.staaaaaaaaaaaack.StxckUtil.*;
 
 public class EventHandler {
-    private static final StxckCommonConfig config = StxckCommon.commonConfig;
+    private static final StxckCommonConfig config = Staaaaaaaaaaaack.commonConfig;
+
 
     public static void onEntityCreate(Entity entity, Runnable eventCanceller) {
-        if (!(entity instanceof ItemEntity itemEntity && isMergable(itemEntity))) return;
+        if (!(entity instanceof ItemEntity itemEntity && isMergable(itemEntity))
+                || isBlackListItem(itemEntity.getItem())
+                || itemEntity.getItem().getMaxStackSize() == 1) return;
 
         var h = config.getMaxMergeDistanceHorizontal();
         var v = config.getMaxMergeDistanceVertical();
 
         var nearByEntities = itemEntity.level.getEntitiesOfClass(
                 ItemEntity.class,
-                itemEntity.getBoundingBox().inflate(h, v == 0 ? .5f : v, h),
+                itemEntity.getBoundingBox().inflate(h, Math.max(v, .5f), h),
                 (she) -> itemEntity != she && isMergable(she)
         );
 
