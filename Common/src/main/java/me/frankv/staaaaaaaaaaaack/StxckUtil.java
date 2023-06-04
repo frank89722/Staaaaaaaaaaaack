@@ -1,6 +1,7 @@
 package me.frankv.staaaaaaaaaaaack;
 
 import me.frankv.staaaaaaaaaaaack.mixin.ItemEntityAccessor;
+import me.frankv.staaaaaaaaaaaack.mixin.ItemStackAccessor;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -26,7 +27,7 @@ public class StxckUtil {
         if (extraItemCount <= 0) return ;
 
         var stack = entity.getItem();
-        var maxSize = stack.getMaxStackSize();
+        var maxSize = ((ItemStackAccessor) (Object) stack).accessItem().getMaxStackSize();
 //        if (stack == ItemStack.EMPTY || stack.is(Items.AIR) || stack.getCount() == maxSize) return;
         if (stack.getCount() == maxSize) return;
 
