@@ -7,6 +7,7 @@ import java.util.*;
 public class StxckForgeCommonConfig implements StxckCommonConfig {
     private final ForgeConfigSpec.DoubleValue maxMergeDistanceHorizontal;
     private final ForgeConfigSpec.DoubleValue maxMergeDistanceVertical;
+    private final ForgeConfigSpec.IntValue maxSize;
     private final ForgeConfigSpec.BooleanValue enableForUnstackableItem;
     private final ForgeConfigSpec.ConfigValue<List<? extends String>> itemBlackList;
 
@@ -23,6 +24,11 @@ public class StxckForgeCommonConfig implements StxckCommonConfig {
                 .comment("The maximum vertical block distance over which dropped items attempt to merge with each other.")
                 .comment("Default: 0.0, Minecraft default: 0.0")
                 .defineInRange("maxMergeDistanceVertical", 0d, 0d, 10d);
+
+        maxSize = builder
+                .comment("The maximum number of extra items that an item entity can hold.")
+                .comment(String.format("Default: %d", Integer.MAX_VALUE))
+                .defineInRange("maxSize", Integer.MAX_VALUE, 1, Integer.MAX_VALUE);
 
         enableForUnstackableItem = builder
                 .comment("Enable for merging non-stackable item.")
@@ -46,6 +52,11 @@ public class StxckForgeCommonConfig implements StxckCommonConfig {
     @Override
     public double getMaxMergeDistanceVertical() {
         return maxMergeDistanceVertical.get();
+    }
+
+    @Override
+    public int getMaxSize() {
+        return maxSize.get();
     }
 
     @Override

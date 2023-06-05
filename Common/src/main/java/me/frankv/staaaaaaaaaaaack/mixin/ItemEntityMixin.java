@@ -76,9 +76,11 @@ public abstract class ItemEntityMixin extends Entity {
 
     @Inject(method = "isMergable", at = @At("HEAD"), cancellable = true)
     private void replaceIsMergable(CallbackInfoReturnable<Boolean> cir) {
-        var itemStack = getThis().getItem();
+        var self = getThis();
+        var itemStack = self.getItem();
         if ((!Staaaaaaaaaaaack.commonConfig.isEnableForUnstackableItem() && itemStack.getMaxStackSize() == 1)
-                || isBlackListItem(itemStack)) return;
+                || isBlackListItem(itemStack)
+                || getExtraItemCount(self) >= Staaaaaaaaaaaack.commonConfig.getMaxSize()) return;
         cir.setReturnValue(isMergable(getThis()));
     }
 
