@@ -9,6 +9,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiPredicate;
 
 public class StxckUtil {
@@ -64,6 +65,24 @@ public class StxckUtil {
         var pickupDelay = accessor.getPickupDelay();
         var age = accessor.getAge();
         return entity.isAlive() && pickupDelay != 32767 && age != -32768 && age < 6000;
+    }
+
+    public static Optional<String> getTotalCountForDisplay(ItemEntity entity) {
+        var total = getTotalCount(entity);
+
+        if (total >= 1_000_000_000) {
+            return Optional.of(String.format("%.3fB", total/1_000_000_000f));
+        }
+        if (total >= 1_000_000) {
+            return Optional.of(String.format("%.2fM", total/1_000_000f));
+        }
+        if (total >= 10_000) {
+            return Optional.of(String.format("%.1fK", total/1_000f));
+        }
+        if (total > entity.getItem().getMaxStackSize()) {
+            return Optional.of(String.valueOf(total));
+        }
+        return Optional.empty();
     }
 
     public static int getTotalCount(ItemEntity entity) {
