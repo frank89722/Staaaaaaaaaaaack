@@ -17,8 +17,8 @@ The name contains 12 'a's btw. 🍔
 
 ---
 Todo:
-- [ ]  custom max stack size
-- [ ]  item white/black list
+- [x]  custom max stack size
+- [x]  item white/black list
 - [X]  custom merge distance
 - [X]  a better way to display the item count (I'm using the built-in entity name currently)
 - [X]  fabric!
