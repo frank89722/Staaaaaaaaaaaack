@@ -16,7 +16,7 @@ public class StxckUtil {
     public static final String EXTRA_ITEM_COUNT_TAG = "StxckExtraItemCount";
     private static EntityDataAccessor<Integer> DATA_EXTRA_ITEM_COUNT;
 
-    public static BiPredicate<ItemStack, ItemStack> itemStackMergablePredicate = null;
+    public static BiPredicate<ItemStack, ItemStack> areMergableReplacementPredicate;
 
 
     public static void setDataExtraItemCount(EntityDataAccessor<Integer> entityDataAccessor) {
@@ -41,9 +41,18 @@ public class StxckUtil {
         entity.setItem(stack.copy());
     }
 
-    public static boolean areMergable(ItemStack itemStack, ItemStack itemStack1) {
-        if (itemStackMergablePredicate != null) {
-            return itemStackMergablePredicate.test(itemStack, itemStack1);
+    public static boolean areMergable(ItemEntity itemEntity, ItemEntity itemEntity1) {
+        var maxExtraSize = Staaaaaaaaaaaack.commonConfig.getMaxSize();
+        if (maxExtraSize - getExtraItemCount(itemEntity) < getTotalCount(itemEntity1)
+                && maxExtraSize - getExtraItemCount(itemEntity1) < getTotalCount(itemEntity)
+        ) {
+            return false;
+        }
+
+        var itemStack = itemEntity.getItem();
+        var itemStack1 = itemEntity1.getItem();
+        if (areMergableReplacementPredicate != null) {
+            return areMergableReplacementPredicate.test(itemStack, itemStack1);
         }
 
         if (!itemStack1.is(itemStack.getItem())) {
@@ -108,17 +117,16 @@ public class StxckUtil {
         return true;
     }
 
-    public static boolean tryToMerge(ItemEntity itemEntity, ItemEntity itemEntity1) {
+    public static void tryToMerge(ItemEntity itemEntity, ItemEntity itemEntity1) {
         if (Objects.equals(itemEntity.getOwner(), itemEntity1.getOwner())
-                && areMergable(itemEntity.getItem(), itemEntity1.getItem())) {
+                && areMergable(itemEntity, itemEntity1)
+        ) {
             if (getTotalCount(itemEntity1) < getTotalCount(itemEntity)) {
                 merge(itemEntity, itemEntity1);
             } else {
                 merge(itemEntity1, itemEntity);
             }
-            return true;
         }
-        return false;
     }
 
     public static void merge(ItemEntity itemEntity, ItemEntity itemEntity1) {

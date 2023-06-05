@@ -19,6 +19,7 @@ public class StxckFiberCommonConfig implements StxckCommonConfig {
 
     private final PropertyMirror<Double> maxMergeDistanceHorizontal = PropertyMirror.create(ConfigTypes.DOUBLE);
     private final PropertyMirror<Double> maxMergeDistanceVertical = PropertyMirror.create(ConfigTypes.DOUBLE);
+    private final PropertyMirror<Integer> maxSize = PropertyMirror.create(ConfigTypes.INTEGER);
     private final PropertyMirror<Boolean> enableForUnstackableItem = PropertyMirror.create(ConfigTypes.BOOLEAN);
     private final PropertyMirror<List<String>> itemBlackList = PropertyMirror.create(stringListConfigType);
 
@@ -34,15 +35,23 @@ public class StxckFiberCommonConfig implements StxckCommonConfig {
 
         builder.beginValue("maxMergeDistanceVertical", ConfigTypes.DOUBLE.withMaximum(10d).withMinimum(0d), 0d)
                 .withComment("""
-                            
+                        
                         The minimum vertical block distance over which dropped items attempt to merge with each other.
                         Range: 0.0 ~ 10.0, Default: 0.0, Minecraft default: 0.0
                         """)
                 .finishValue(maxMergeDistanceVertical::mirror);
 
+        builder.beginValue("maxSize", ConfigTypes.INTEGER.withMaximum(Integer.MAX_VALUE).withMinimum(1), Integer.MAX_VALUE)
+                .withComment(String.format("""
+                        
+                        The maximum number of extra items that an item entity can hold.
+                        Range: 0 ~ %d, Default: %d
+                        """, Integer.MAX_VALUE, Integer.MAX_VALUE))
+                .finishValue(maxSize::mirror);
+
         builder.beginValue("enableForUnstackableItem", ConfigTypes.BOOLEAN, false)
                 .withComment("""
-                            
+                        
                         Enable for merging non-stackable item.
                         Should be used with caution while playing with other mods.
                         Default: false
@@ -51,7 +60,7 @@ public class StxckFiberCommonConfig implements StxckCommonConfig {
 
         builder.beginValue("itemBlackList", stringListConfigType, List.of())
                 .withComment("""
-                            
+                        
                         The list of items that should not exceed their original max stack size.
                         You can achieve the same feature by using the item tag "#staaaaaaaaaaaack:blacklist" as well.
                         e.g., ["minecraft:diamond_block", "minecraft:coal"]
@@ -69,6 +78,11 @@ public class StxckFiberCommonConfig implements StxckCommonConfig {
     @Override
     public double getMaxMergeDistanceVertical() {
         return maxMergeDistanceVertical.getValue();
+    }
+
+    @Override
+    public int getMaxSize() {
+        return maxSize.getValue();
     }
 
     @Override

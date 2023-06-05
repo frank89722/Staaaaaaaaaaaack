@@ -34,7 +34,7 @@ public class StxckForgeInitializer {
     }
 
     private void replaceAreMergePredicate() {
-        StxckUtil.itemStackMergablePredicate = (a, b) -> {
+        StxckUtil.areMergableReplacementPredicate = (a, b) -> {
             if (!a.is(b.getItem())) {
                 return false;
             } else if (a.hasTag() ^ b.hasTag()) {
