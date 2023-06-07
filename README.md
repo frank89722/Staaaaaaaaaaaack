@@ -1,4 +1,6 @@
-# Staaaaaaaaaaaack
+# Staaaaaaaaaaaack [![](https://img.shields.io/modrinth/dt/myL7fuqp?label=modrinth)](https://modrinth.com/mod/staaaaaaaaaaaack) [![](https://cf.way2muchnoise.eu/short_staaaaaaaaaaaack_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/staaaaaaaaaaaack) 
+
+---
 
 This mod allows dropped items to merge, even if their stacks are already full. This can help reduce lag caused by a large number of drops in a small area.
 
