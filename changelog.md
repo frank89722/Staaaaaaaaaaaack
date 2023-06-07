@@ -1,3 +1,6 @@
+### 1.0.1
+- improve mod compatibility, close [#5](https://github.com/frank89722/Staaaaaaaaaaaack/issues/5)
+
 ### 1.0
 - add configuration option for setting the maximum number of extra items
 - add number abbreviation feature for item count overlay
