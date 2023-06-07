@@ -121,10 +121,10 @@ public abstract class ItemEntityMixin extends Entity {
 
     @Inject(method = "setItem", at = @At("HEAD"), cancellable = true)
     private void refillOnSetEmptyItem(ItemStack item, CallbackInfo ci) {
+        var self = getThis();
         if (item == ItemStack.EMPTY || item.is(Items.AIR)) {
-            var self = getThis();
             if (getExtraItemCount(self) <= 0) return;
-
+            self.getItem().setCount(0);
             refillItemStack(self);
             ci.cancel();
         }
