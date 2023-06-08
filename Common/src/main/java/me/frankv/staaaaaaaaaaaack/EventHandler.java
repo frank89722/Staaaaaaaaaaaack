@@ -18,7 +18,7 @@ public class EventHandler {
         var h = config.getMaxMergeDistanceHorizontal();
         var v = config.getMaxMergeDistanceVertical();
 
-        var nearByEntities = itemEntity.level.getEntitiesOfClass(
+        var nearByEntities = itemEntity.level().getEntitiesOfClass(
                 ItemEntity.class,
                 itemEntity.getBoundingBox().inflate(h, Math.max(v, .5f), h),
                 (she) -> itemEntity != she && isMergable(she)
