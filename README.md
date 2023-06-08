@@ -13,7 +13,8 @@ The name contains 12 'a's btw. 🍔
 
 | MC version | Forge  | Fabric |
 |:----------:|:------:|:------:|
-|   1.19.4   |  main  |  main  |
+|   1.20.x   |  main  |  main  |
+|   1.19.4   | active | active |
 |   1.19.2   | active | active |
 |   1.18.2   | active | active |
 

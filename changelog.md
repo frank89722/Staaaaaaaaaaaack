@@ -1,3 +1,6 @@
+### 1.0.2
+- remove unnecessary check on handle entity create event
+
 ### 1.0.1
 - improve mod compatibility, close [#5](https://github.com/frank89722/Staaaaaaaaaaaack/issues/5)
 
