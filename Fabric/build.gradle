@@ -115,7 +115,7 @@ if (ENV.MODRINTH_TOKEN) {
         projectId = modrinth_id
         versionType = release_type
         versionName = release_title
-        versionNumber = version
+        versionNumber = "${version}+fabric"
         uploadFile = remapJar
         gameVersions = [ minecraft_version ]
         loaders = ["fabric", "quilt"]
