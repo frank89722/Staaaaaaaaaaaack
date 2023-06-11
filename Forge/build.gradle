@@ -134,7 +134,7 @@ if (ENV.MODRINTH_TOKEN) {
         projectId = modrinth_id
         versionType = release_type
         versionName = release_title
-        versionNumber = version
+        versionNumber = "${version}+forge"
         uploadFile = jar
         gameVersions = [ minecraft_version ]
         changelog = rootProject.file('changelog.md').text
