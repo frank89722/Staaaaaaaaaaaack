@@ -14,6 +14,7 @@ public class StxckFiberClientConfig implements StxckClientConfig {
     private final ConfigTree configTree;
 
     private final PropertyMirror<Integer> minItemCountRenderDistance = PropertyMirror.create(ConfigTypes.INTEGER);
+    private final PropertyMirror<Double> overlaySizeMultiplier = PropertyMirror.create(ConfigTypes.DOUBLE);
 
     public StxckFiberClientConfig() {
         var builder = ConfigTree.builder();
@@ -25,11 +26,23 @@ public class StxckFiberClientConfig implements StxckClientConfig {
                         """)
                 .finishValue(minItemCountRenderDistance::mirror);
 
+        builder.beginValue("overlaySizeMultiplier", ConfigTypes.DOUBLE.withMaximum(2d).withMinimum(.1d), 0.8d)
+                .withComment("""
+                        
+                        Range: 0.1 ~ 2.0, Default: 0.8
+                        """)
+                .finishValue(overlaySizeMultiplier::mirror);
+
         configTree = builder.build();
     }
 
     @Override
     public int getMinItemCountRenderDistance() {
         return minItemCountRenderDistance.getValue();
+    }
+
+    @Override
+    public double getOverlaySizeMultiplier() {
+        return overlaySizeMultiplier.getValue();
     }
 }
