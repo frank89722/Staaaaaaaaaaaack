@@ -129,23 +129,26 @@ public class StxckUtil {
         }
     }
 
-    public static void merge(ItemEntity itemEntity, ItemEntity itemEntity1) {
-        var entityAccessor = (ItemEntityAccessor) itemEntity;
-        var entityAccessor1 = (ItemEntityAccessor) itemEntity1;
+    public static void merge(ItemEntity consumer, ItemEntity supplier) {
+        var consumerAccessor = (ItemEntityAccessor) consumer;
+        var supplierAccessor = (ItemEntityAccessor) supplier;
 
-        entityAccessor.setPickupDelay(Math.max(entityAccessor.getPickupDelay(), entityAccessor1.getPickupDelay()));
-        entityAccessor.setAge(Math.min(entityAccessor.getAge(), entityAccessor1.getAge()));
+        consumerAccessor.setPickupDelay(Math.max(consumerAccessor.getPickupDelay(), supplierAccessor.getPickupDelay()));
+        consumerAccessor.setAge(Math.min(consumerAccessor.getAge(), supplierAccessor.getAge()));
 
-        grow(itemEntity, getTotalCount(itemEntity1));
+        grow(consumer, getTotalCount(supplier));
 
-        setExtraItemCount(itemEntity1, 0);
-        itemEntity1.setItem(ItemStack.EMPTY);
-        itemEntity1.discard();
+        setExtraItemCount(supplier, 0);
+        supplier.setItem(ItemStack.EMPTY);
+        supplier.discard();
     }
 
     public static boolean isBlackListItem(ItemStack itemStack) {
-        return (!Staaaaaaaaaaaack.commonConfig.isEnableForUnstackableItem() && itemStack.getMaxStackSize() == 1)
-                || (itemStack.is(Staaaaaaaaaaaack.BLACK_LIST_TAG)
-                || Staaaaaaaaaaaack.getItemBlackList().contains(itemStack.getItem()));
+        if (!Staaaaaaaaaaaack.commonConfig.isEnableForUnstackableItem() && itemStack.getMaxStackSize() == 1) {
+            return true;
+        }
+
+        return itemStack.is(Staaaaaaaaaaaack.BLACK_LIST_TAG)
+                || Staaaaaaaaaaaack.getItemBlackList().contains(itemStack.getItem());
     }
 }

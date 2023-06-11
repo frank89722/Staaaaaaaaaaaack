@@ -78,15 +78,16 @@ public abstract class ItemEntityMixin extends Entity {
     private void replaceIsMergable(CallbackInfoReturnable<Boolean> cir) {
         var self = getThis();
         var itemStack = self.getItem();
-        if ((!Staaaaaaaaaaaack.commonConfig.isEnableForUnstackableItem() && itemStack.getMaxStackSize() == 1)
-                || isBlackListItem(itemStack)
+        if (isBlackListItem(itemStack)
                 || getExtraItemCount(self) >= Staaaaaaaaaaaack.commonConfig.getMaxSize()) return;
         cir.setReturnValue(isMergable(getThis()));
     }
 
     @Inject(method = "tryToMerge", at = @At("HEAD"), cancellable = true)
     private void replaceTryToMerge(ItemEntity itemEntity1, CallbackInfo ci) {
-        tryToMerge(getThis(), itemEntity1);
+        var self = getThis();
+        if (isBlackListItem(self.getItem())) return;
+        tryToMerge(self, itemEntity1);
         ci.cancel();
     }
 
