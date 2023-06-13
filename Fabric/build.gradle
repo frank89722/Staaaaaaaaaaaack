@@ -95,6 +95,7 @@ if (ENV.CF_TOKEN) {
             addGameVersion "Server"
             addGameVersion "Client"
             addGameVersion minecraft_version
+            addGameVersion "1.20.1"
             mainArtifact(remapJar.archivePath) {
                 it.displayName = release_title
             }
@@ -117,7 +118,7 @@ if (ENV.MODRINTH_TOKEN) {
         versionName = release_title
         versionNumber = "${version}+fabric"
         uploadFile = remapJar
-        gameVersions = [ minecraft_version ]
+        gameVersions = [ minecraft_version, "1.20.1" ]
         loaders = ["fabric", "quilt"]
         changelog = rootProject.file('changelog.md').text
     }
