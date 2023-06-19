@@ -1,2 +1,1 @@
-- Fixes issue with item blacklist not functioning correctly
-- Adds configuration for overlay size multiplier
+- Enhances mod compatibility (use asdkmm5050 as a rubber duck debugger)
