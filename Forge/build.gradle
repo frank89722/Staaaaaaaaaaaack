@@ -80,6 +80,10 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+    implementation fg.deobf("maven.modrinth:ncAcdgk7:6oOOTpbH")
+    implementation fg.deobf("curse.maven:sophisticated-core-618298:4591279")
+    implementation fg.deobf("curse.maven:sophisticated-backpacks-422301:4571825")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:11.6.0.1015")
 
     implementation project(":Common")
 }
