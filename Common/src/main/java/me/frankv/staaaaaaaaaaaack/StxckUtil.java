@@ -30,7 +30,6 @@ public class StxckUtil {
 
         var stack = entity.getItem();
         var maxSize = ((ItemStackAccessor) (Object) stack).accessItem().getMaxStackSize();
-//        if (stack == ItemStack.EMPTY || stack.is(Items.AIR) || stack.getCount() == maxSize) return;
         if (stack.getCount() == maxSize) return;
 
         var x = maxSize - stack.getCount();
@@ -110,9 +109,11 @@ public class StxckUtil {
         if (!entity.getType().equals(EntityType.ITEM) || !reason.equals(Entity.RemovalReason.DISCARDED)) return false;
 
         var itemEntity = (ItemEntity) entity;
-        itemEntity.getItem().setCount(0);
+        if (getExtraItemCount(itemEntity) <= 0) return false;
 
-        if (getTotalCount(itemEntity) == 0) return false;
+        var copied = itemEntity.getItem().copy();
+        itemEntity.setItem(copied);
+        copied.setCount(0);
         refillItemStack(itemEntity);
         return true;
     }

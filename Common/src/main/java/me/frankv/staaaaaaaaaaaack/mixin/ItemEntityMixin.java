@@ -128,7 +128,9 @@ public abstract class ItemEntityMixin extends Entity {
             self.getItem().setCount(0);
             refillItemStack(self);
             ci.cancel();
+            return;
         }
+        refillItemStack(self);
     }
 
     @Override
