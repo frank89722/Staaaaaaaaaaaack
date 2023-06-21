@@ -19,15 +19,6 @@ The name contains 12 'a's btw. 🍔
 | MC version | Forge  | Fabric |
 |:----------:|:------:|:------:|
 |   1.20.x   |  main  |  main  |
-|   1.19.4   | active | active |
+|   1.19.4   |  EOL   |  EOL   |
 |   1.19.2   | active | active |
 |   1.18.2   | active | active |
-
----
-Todo:
-- [x]  custom max stack size
-- [x]  item white/black list
-- [X]  custom merge distance
-- [X]  a better way to display the item count (I'm using the built-in entity name currently)
-- [X]  fabric!
-- [X]  move away from ARR
