@@ -105,15 +105,24 @@ public abstract class ItemEntityMixin extends Entity {
         return getThis().getBoundingBox().inflate(h, v, h);
     }
 
-    @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
+    @Inject(
+            method = "addAdditionalSaveData",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z")
+    )
     private void saveExtraItemCount(CompoundTag compoundTag, CallbackInfo ci) {
-        var self = getThis();
-        if (getExtraItemCount(self) > 0) {
-            compoundTag.putInt(EXTRA_ITEM_COUNT_TAG, getExtraItemCount(self));
+        var extraCount = getExtraItemCount(getThis());
+        if (extraCount > 0) {
+            compoundTag.putInt(EXTRA_ITEM_COUNT_TAG, extraCount);
         }
     }
 
-    @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
+    @Inject(
+            method = "readAdditionalSaveData",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/nbt/CompoundTag;getCompound(Ljava/lang/String;)Lnet/minecraft/nbt/CompoundTag;"
+            )
+    )
     private void readExtraItemCount(CompoundTag compoundTag, CallbackInfo ci) {
         if (compoundTag.contains(EXTRA_ITEM_COUNT_TAG)) {
             setExtraItemCount(getThis(), compoundTag.getInt(EXTRA_ITEM_COUNT_TAG));
@@ -127,8 +136,9 @@ public abstract class ItemEntityMixin extends Entity {
             if (getExtraItemCount(self) <= 0) return;
             self.getItem().setCount(0);
             refillItemStack(self);
-            ci.cancel();
-            return;
+            if (!self.getItem().isEmpty()) {
+                ci.cancel();
+            }
         }
         refillItemStack(self);
     }
