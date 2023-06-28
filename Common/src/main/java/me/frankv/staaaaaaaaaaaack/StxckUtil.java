@@ -6,6 +6,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
@@ -29,15 +30,16 @@ public class StxckUtil {
         if (extraItemCount <= 0) return ;
 
         var stack = entity.getItem();
-        var maxSize = ((ItemStackAccessor) (Object) stack).accessItem().getMaxStackSize();
-        if (stack.getCount() == maxSize) return;
-
-        var x = maxSize - stack.getCount();
-        var refillCount = Math.min(x, extraItemCount);
-
-        stack.grow(refillCount);
-        setExtraItemCount(entity, extraItemCount - refillCount);
-        entity.setItem(stack.copy());
+        Optional.ofNullable(((ItemStackAccessor) (Object) stack).accessItem())
+                .map(Item::getMaxStackSize)
+                .ifPresentOrElse(maxSize -> {
+                    if (stack.getCount() == maxSize) return;
+                    var x = maxSize - stack.getCount();
+                    var refillCount = Math.min(x, extraItemCount);
+                    stack.grow(refillCount);
+                    setExtraItemCount(entity, extraItemCount - refillCount);
+                    entity.setItem(stack.copy());
+                }, entity::discard);
     }
 
     public static boolean areMergable(ItemEntity itemEntity, ItemEntity itemEntity1) {
