@@ -32,14 +32,14 @@ public class StxckUtil {
         var stack = entity.getItem();
         Optional.ofNullable(((ItemStackAccessor) (Object) stack).accessItem())
                 .map(Item::getMaxStackSize)
-                .ifPresentOrElse(maxSize -> {
+                .ifPresent(maxSize -> {
                     if (stack.getCount() == maxSize) return;
                     var x = maxSize - stack.getCount();
                     var refillCount = Math.min(x, extraItemCount);
                     stack.grow(refillCount);
                     setExtraItemCount(entity, extraItemCount - refillCount);
                     entity.setItem(stack.copy());
-                }, entity::discard);
+                });
     }
 
     public static boolean areMergable(ItemEntity itemEntity, ItemEntity itemEntity1) {
