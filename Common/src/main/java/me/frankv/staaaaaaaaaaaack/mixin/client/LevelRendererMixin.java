@@ -15,10 +15,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 
-@Mixin(LevelRenderer.class)
+@Mixin(value = LevelRenderer.class)
 public abstract class LevelRendererMixin {
 
-    @Inject(method = "renderEntity", at = @At("TAIL"))
+    @Inject(
+            method = "renderEntity",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/renderer/entity/EntityRenderDispatcher;render(Lnet/minecraft/world/entity/Entity;DDDFFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V"
+            )
+    )
     private void renderItemCount(
             Entity entity,
             double x, double y, double z,
@@ -30,7 +36,7 @@ public abstract class LevelRendererMixin {
         var entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         var accessor = (EntityRenderDispatcherAccessor) entityRenderDispatcher;
         var maxDistance = Staaaaaaaaaaaack.clientConfig.getMinItemCountRenderDistance();
-        if (accessor.invokeDistanceToSqr(entity) > maxDistance * maxDistance) return;
+        if (entityRenderDispatcher.distanceToSqr(entity) > maxDistance * maxDistance) return;
         if (entity instanceof ItemEntity itemEntity) {
             var offset = entityRenderDispatcher.getRenderer(entity).getRenderOffset(entity, partialTicks);
             var light = entityRenderDispatcher.getPackedLightCoords(entity, partialTicks);
