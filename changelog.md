@@ -1,2 +1,1 @@
-- fix the `/data modify entity` command not working on an item entity that has the `StxckExtraItemCount` tag.
-- fix a potential crash that occurs when logging into a world with an item entity holding an Air item.
+- fix item disappearing on login into a world
