@@ -1,1 +1,1 @@
-- fix item disappearing on login into a world
+- fix a crash with Optifine
