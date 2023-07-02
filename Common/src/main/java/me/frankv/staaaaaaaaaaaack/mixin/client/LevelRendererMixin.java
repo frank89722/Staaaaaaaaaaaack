@@ -34,6 +34,7 @@ public abstract class LevelRendererMixin {
             CallbackInfo ci
     ) {
         var entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+        if (entityRenderDispatcher.camera == null) return;
         var accessor = (EntityRenderDispatcherAccessor) entityRenderDispatcher;
         var maxDistance = Staaaaaaaaaaaack.clientConfig.getMinItemCountRenderDistance();
         if (entityRenderDispatcher.distanceToSqr(entity) > maxDistance * maxDistance) return;
