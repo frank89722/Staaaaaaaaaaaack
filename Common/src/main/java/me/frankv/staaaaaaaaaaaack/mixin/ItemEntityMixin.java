@@ -8,6 +8,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -141,6 +142,15 @@ public abstract class ItemEntityMixin extends Entity {
             }
         }
         refillItemStack(self);
+    }
+
+    @Inject(method = "playerTouch", at = @At("RETURN"))
+    private void syncItemOnPickup(Player player, CallbackInfo ci) {
+        var self = getThis();
+        var item = self.getItem();
+        if (!item.isEmpty()) {
+            self.setItem(item.copy());
+        }
     }
 
     @Override
