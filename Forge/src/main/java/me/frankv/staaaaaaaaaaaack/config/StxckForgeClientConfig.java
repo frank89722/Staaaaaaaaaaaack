@@ -5,6 +5,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public class StxckForgeClientConfig implements StxckClientConfig {
     private final ForgeConfigSpec.IntValue minItemCountRenderDistance;
     private final ForgeConfigSpec.DoubleValue overlaySizeMultiplier;
+    private final ForgeConfigSpec.BooleanValue alwaysShowItemCount;
 
 
     public StxckForgeClientConfig(ForgeConfigSpec.Builder builder) {
@@ -19,6 +20,11 @@ public class StxckForgeClientConfig implements StxckClientConfig {
                 .comment("Default: 0.8")
                 .defineInRange("overlaySizeMultiplier", 0.8d, 0.1d, 2d);
 
+        alwaysShowItemCount = builder
+                .comment("Show item count overlay even if the item count is lower than default maximum stack size.")
+                .comment("Default: false")
+                .define("alwaysShowItemCount", false);
+
         builder.pop();
     }
 
@@ -30,5 +36,10 @@ public class StxckForgeClientConfig implements StxckClientConfig {
     @Override
     public double getOverlaySizeMultiplier() {
         return overlaySizeMultiplier.get();
+    }
+
+    @Override
+    public boolean isAlwaysShowItemCount() {
+        return alwaysShowItemCount.get();
     }
 }
