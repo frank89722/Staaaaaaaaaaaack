@@ -79,6 +79,7 @@ public class StxckUtil {
 
     public static Optional<String> getTotalCountForDisplay(ItemEntity entity) {
         var total = getTotalCount(entity);
+        boolean alwaysShowItemCount = Staaaaaaaaaaaack.clientConfig.isAlwaysShowItemCount();
 
         if (total >= 1_000_000_000) {
             return Optional.of(String.format("%.3fB", total/1_000_000_000f));
@@ -89,7 +90,7 @@ public class StxckUtil {
         if (total >= 10_000) {
             return Optional.of(String.format("%.1fK", total/1_000f));
         }
-        if (total > entity.getItem().getMaxStackSize()) {
+        if (alwaysShowItemCount || total > entity.getItem().getMaxStackSize()) {
             return Optional.of(String.valueOf(total));
         }
         return Optional.empty();

@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface EntityRenderDispatcherAccessor {
     @Accessor("font")
     Font getFont();
+
     @Accessor("cameraOrientation")
     Quaternion getCameraOrientation();
 }
