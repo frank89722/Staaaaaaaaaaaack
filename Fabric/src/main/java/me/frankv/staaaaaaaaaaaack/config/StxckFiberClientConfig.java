@@ -15,6 +15,7 @@ public class StxckFiberClientConfig implements StxckClientConfig {
 
     private final PropertyMirror<Integer> minItemCountRenderDistance = PropertyMirror.create(ConfigTypes.INTEGER);
     private final PropertyMirror<Double> overlaySizeMultiplier = PropertyMirror.create(ConfigTypes.DOUBLE);
+    private final PropertyMirror<Boolean> alwaysShowItemCount = PropertyMirror.create(ConfigTypes.BOOLEAN);
 
     public StxckFiberClientConfig() {
         var builder = ConfigTree.builder();
@@ -33,6 +34,14 @@ public class StxckFiberClientConfig implements StxckClientConfig {
                         """)
                 .finishValue(overlaySizeMultiplier::mirror);
 
+        builder.beginValue("alwaysShowItemCount", ConfigTypes.BOOLEAN, false)
+                .withComment("""
+                        
+                        Show item count overlay even if the item count is lower than default maximum stack size.
+                        Default: false
+                        """)
+                .finishValue(alwaysShowItemCount::mirror);
+
         configTree = builder.build();
     }
 
@@ -44,5 +53,10 @@ public class StxckFiberClientConfig implements StxckClientConfig {
     @Override
     public double getOverlaySizeMultiplier() {
         return overlaySizeMultiplier.getValue();
+    }
+
+    @Override
+    public boolean isAlwaysShowItemCount() {
+        return alwaysShowItemCount.getValue();
     }
 }
