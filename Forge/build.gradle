@@ -83,6 +83,9 @@ dependencies {
     implementation fg.deobf("maven.modrinth:ncAcdgk7:6oOOTpbH")
     implementation fg.deobf("curse.maven:sophisticated-core-618298:4591279")
     implementation fg.deobf("curse.maven:sophisticated-backpacks-422301:4571825")
+    implementation fg.deobf("curse.maven:botania-225643:4557912")
+    implementation fg.deobf("curse.maven:patchouli-306770:4031402")
+    implementation fg.deobf("curse.maven:curios-309927:4523009")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:11.6.0.1015")
 
     implementation project(":Common")
