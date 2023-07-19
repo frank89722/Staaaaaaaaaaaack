@@ -1,1 +1,1 @@
-- fix a crash with Optifine
+- add configuration for always show the item count overlay (disabled by default)
