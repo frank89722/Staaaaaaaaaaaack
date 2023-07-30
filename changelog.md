@@ -1,1 +1,1 @@
-- add configuration for always show the item count overlay (disabled by default)
+- fix conflict with Create
