@@ -136,12 +136,8 @@ public abstract class ItemEntityMixin extends Entity {
         if (item == ItemStack.EMPTY || item.is(Items.AIR)) {
             if (getExtraItemCount(self) <= 0) return;
             self.getItem().setCount(0);
-            refillItemStack(self);
-            if (!self.getItem().isEmpty()) {
-                ci.cancel();
-            }
+            ci.cancel();
         }
-        refillItemStack(self);
     }
 
     @Inject(method = "playerTouch", at = @At("RETURN"))
