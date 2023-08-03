@@ -131,13 +131,16 @@ public abstract class ItemEntityMixin extends Entity {
     }
 
     @Inject(method = "setItem", at = @At("HEAD"), cancellable = true)
-    private void refillOnSetEmptyItem(ItemStack item, CallbackInfo ci) {
+    private void handleSetEmpty(ItemStack item, CallbackInfo ci) {
+        if (item != ItemStack.EMPTY && !item.is(Items.AIR)) return;
         var self = getThis();
-        if (item == ItemStack.EMPTY || item.is(Items.AIR)) {
-            if (getExtraItemCount(self) <= 0) return;
-            self.getItem().setCount(0);
-            ci.cancel();
+        if (getExtraItemCount(self) <= 0) return;
+        var copied = self.getItem().copy();
+        if (!copied.isEmpty()) {
+            self.setItem(copied);
+            copied.setCount(0);
         }
+        ci.cancel();
     }
 
     @Inject(method = "playerTouch", at = @At("RETURN"))
