@@ -11,6 +11,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import static me.frankv.staaaaaaaaaaaack.StxckUtil.getTotalCountForDisplay;
 
 public class ItemCountRenderer {
+
     public static void renderItemCount(
             ItemEntity entity,
             PoseStack poseStack,
@@ -18,6 +19,9 @@ public class ItemCountRenderer {
             int light,
             EntityRenderDispatcherAccessor entityRenderDispatcher
     ) {
+        var player = Minecraft.getInstance().player;
+        if (player != null && player.isShiftKeyDown()) return;
+
         getTotalCountForDisplay(entity).ifPresent(itemCount -> {
             var scale = 0.025f * (float) Staaaaaaaaaaaack.clientConfig.getOverlaySizeMultiplier();
             poseStack.pushPose();
@@ -37,4 +41,5 @@ public class ItemCountRenderer {
             poseStack.popPose();
         });
     }
+
 }
