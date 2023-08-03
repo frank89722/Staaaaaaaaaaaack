@@ -1,1 +1,2 @@
-- fix conflict with Create
+- Hide item count overlay while sneaking
+- Improve mod compatibility
