@@ -1,2 +1,1 @@
-- Hide item count overlay while sneaking
 - Improve mod compatibility
