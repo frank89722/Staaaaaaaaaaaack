@@ -31,6 +31,9 @@ public abstract class ItemEntityMixin extends Entity {
     @Unique
     private static final EntityDataAccessor<Integer> STXCK_DATA_EXTRA_ITEM_COUNT;
 
+    @Unique
+    private boolean discardedTick = false;
+
 
     static {
         STXCK_DATA_EXTRA_ITEM_COUNT = SynchedEntityData.defineId(ItemEntityMixin.class, EntityDataSerializers.INT);
@@ -72,6 +75,7 @@ public abstract class ItemEntityMixin extends Entity {
             )
     )
     private void tickInject(CallbackInfo ci) {
+        discardedTick = false;
         refillItemStack(getThis());
     }
 
@@ -132,6 +136,10 @@ public abstract class ItemEntityMixin extends Entity {
 
     @Inject(method = "setItem", at = @At("HEAD"), cancellable = true)
     private void handleSetEmpty(ItemStack item, CallbackInfo ci) {
+        if (discardedTick) {
+            ci.cancel();
+            return;
+        }
         if (item != ItemStack.EMPTY && !item.is(Items.AIR)) return;
         var self = getThis();
         if (getExtraItemCount(self) <= 0) return;
@@ -154,7 +162,11 @@ public abstract class ItemEntityMixin extends Entity {
 
     @Override
     public void remove(RemovalReason reason) {
-        if (tryRefillItemStackOnEntityRemove(getThis(), reason)) return;
+        if (tryRefillItemStackOnEntityRemove(getThis(), reason)) {
+            discardedTick = true;
+            unsetRemoved();
+            return;
+        }
         super.remove(reason);
     }
 
