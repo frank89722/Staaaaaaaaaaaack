@@ -1,18 +1,20 @@
 package me.frankv.staaaaaaaaaaaack.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.NeoForgeConfig;
 
 import java.util.*;
 
 public class StxckForgeCommonConfig implements StxckCommonConfig {
-    private final ForgeConfigSpec.DoubleValue maxMergeDistanceHorizontal;
-    private final ForgeConfigSpec.DoubleValue maxMergeDistanceVertical;
-    private final ForgeConfigSpec.IntValue maxSize;
-    private final ForgeConfigSpec.BooleanValue enableForUnstackableItem;
-    private final ForgeConfigSpec.ConfigValue<List<? extends String>> itemBlackList;
+    private final ModConfigSpec.DoubleValue maxMergeDistanceHorizontal;
+    private final ModConfigSpec.DoubleValue maxMergeDistanceVertical;
+    private final ModConfigSpec.IntValue maxSize;
+    private final ModConfigSpec.BooleanValue enableForUnstackableItem;
+    private final ModConfigSpec.ConfigValue<List<? extends String>> itemBlackList;
 
 
-    public StxckForgeCommonConfig(ForgeConfigSpec.Builder builder) {
+    public StxckForgeCommonConfig(ModConfigSpec.Builder builder) {
         builder.push("Item merge settings");
 
         maxMergeDistanceHorizontal = builder

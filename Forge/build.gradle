@@ -1,101 +1,42 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.0.+', changing: true
-        classpath 'org.spongepowered:mixingradle:0.7.+'
-    }
-}
-
 plugins {
     id 'io.github.CDAGaming.cursegradle' version '1.+'
     id "com.modrinth.minotaur" version "2.+"
+    id 'idea'
+    id 'eclipse'
+    id 'net.neoforged.gradle.userdev' version '7.0.+'
 }
-
-
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-apply plugin: 'org.spongepowered.mixin'
 
 archivesBaseName = "${mod_id}-forge"
 
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+runs {
+    configureEach {
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+        systemProperty 'mixin.debug.export', 'true'
+        systemProperty 'forge.logging.console.level', 'debug'
 
-minecraft {
-    mappings channel: 'official', version: minecraft_version
+        modSource project.sourceSets.main
+    }
 
-    runs {
-        client {
-            workingDirectory project.file('run')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName 'Client'
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
+    client {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+    }
 
-            mods {
-                modClientRun {
-                    source sourceSets.main
-                    source project(":Common").sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName 'Server'
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-
-            mods {
-                modServerRun {
-                    source sourceSets.main
-                    source project(":Common").sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            taskName 'Data'
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                modDataRun {
-                    source sourceSets.main
-                    source project(":Common").sourceSets.main
-                }
-            }
-        }
+    server {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        programArgument '--nogui'
     }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation "net.neoforged:neoforge:${neo_version}"
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
     implementation project(":Common")
 }
 
-mixin {
-    add project(":Common").sourceSets.main, "${mod_id}.refmap.json"
-    config "${mod_id}.mixins.json"
-
-    debug.verbose = true
-    debug.export = true
-    dumpTargetOnFailure = true
-
-    quiet
-}
-
-tasks.withType(JavaCompile) {
+tasks.compileJava {
     source(project(":Common").sourceSets.main.allSource)
 }
 
@@ -103,7 +44,7 @@ processResources {
     from project(":Common").sourceSets.main.resources
 }
 
-jar.finalizedBy('reobfJar')
+//jar.finalizedBy('reobfJar')
 
 def ENV = System.getenv()
 def release_title = "[Forge] v${version}"
@@ -114,12 +55,11 @@ if (ENV.CF_TOKEN) {
         project {
             id = curse_id
             releaseType = release_type
-            addGameVersion "Forge"
+            addGameVersion "NeoForge"
             addGameVersion "Java 17"
             addGameVersion "Server"
             addGameVersion "Client"
             addGameVersion minecraft_version
-            addGameVersion "1.20.1"
             mainArtifact(jar) {
                 it.displayName = release_title
             }
@@ -137,20 +77,7 @@ if (ENV.MODRINTH_TOKEN) {
         versionName = release_title
         versionNumber = "${version}+forge"
         uploadFile = jar
-        gameVersions = [ minecraft_version, "1.20.1" ]
+        gameVersions = [ minecraft_version ]
         changelog = rootProject.file('changelog.md').text
-    }
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
-        }
     }
 }

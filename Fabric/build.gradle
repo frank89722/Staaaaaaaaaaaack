@@ -1,6 +1,5 @@
 plugins {
     id 'fabric-loom' version '1.2-SNAPSHOT'
-    id 'maven-publish'
     id 'idea'
     id 'io.github.CDAGaming.cursegradle' version '1.+'
     id "com.modrinth.minotaur" version "2.+"
@@ -63,22 +62,22 @@ jar {
     }
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            groupId project.group
-            artifactId project.archivesBaseName
-            version project.version
-            from components.java
-        }
-    }
-
-    repositories {
-        maven {
-            url "file://" + System.getenv("local_maven")
-        }
-    }
-}
+//publishing {
+//    publications {
+//        mavenJava(MavenPublication) {
+//            groupId project.group
+//            artifactId project.archivesBaseName
+//            version project.version
+//            from components.java
+//        }
+//    }
+//
+//    repositories {
+//        maven {
+//            url "file://" + System.getenv("local_maven")
+//        }
+//    }
+//}
 
 def ENV = System.getenv()
 def release_title = "[Fabric] v${version}"

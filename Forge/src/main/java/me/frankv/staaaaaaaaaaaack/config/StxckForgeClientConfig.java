@@ -1,14 +1,14 @@
 package me.frankv.staaaaaaaaaaaack.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class StxckForgeClientConfig implements StxckClientConfig {
-    private final ForgeConfigSpec.IntValue minItemCountRenderDistance;
-    private final ForgeConfigSpec.DoubleValue overlaySizeMultiplier;
-    private final ForgeConfigSpec.BooleanValue alwaysShowItemCount;
+    private final ModConfigSpec.IntValue minItemCountRenderDistance;
+    private final ModConfigSpec.DoubleValue overlaySizeMultiplier;
+    private final ModConfigSpec.BooleanValue alwaysShowItemCount;
 
 
-    public StxckForgeClientConfig(ForgeConfigSpec.Builder builder) {
+    public StxckForgeClientConfig(ModConfigSpec.Builder builder) {
         builder.push("Item count overlay");
 
         minItemCountRenderDistance = builder
