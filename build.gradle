@@ -7,7 +7,7 @@ subprojects {
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
     def ENV = System.getenv()
-    version = "${minecraft_version}-${base_version}-${ENV.GITHUB_RUN_NUMBER ?: 'dev'}"
+    version = "${minecraft_version}-${base_version}-${ENV.RUN_NUMBER ?: 'dev'}"
 
     jar {
         manifest {

@@ -17,7 +17,7 @@ Drops are merged!
 [[dependencies.staaaaaaaaaaaack]]
    modId="neoforge"
    mandatory=true
-   versionRange="[0,)"
+   versionRange="[20.2,)"
    ordering="NONE"
    side="BOTH"
 
