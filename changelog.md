@@ -1,1 +1,2 @@
-- Improve mod compatibility
+- Update to MC1.20.2
+- Switch to NeoForge
