@@ -75,6 +75,7 @@ if (ENV.MODRINTH_TOKEN) {
         versionNumber = "${version}+forge"
         uploadFile = jar
         gameVersions = [ minecraft_version ]
+        loaders = [ "neoforge" ]
         changelog = rootProject.file('changelog.md').text
     }
 }
