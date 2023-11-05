@@ -62,23 +62,6 @@ jar {
     }
 }
 
-//publishing {
-//    publications {
-//        mavenJava(MavenPublication) {
-//            groupId project.group
-//            artifactId project.archivesBaseName
-//            version project.version
-//            from components.java
-//        }
-//    }
-//
-//    repositories {
-//        maven {
-//            url "file://" + System.getenv("local_maven")
-//        }
-//    }
-//}
-
 def ENV = System.getenv()
 def release_title = "[Fabric] v${version}"
 

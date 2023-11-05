@@ -4,6 +4,7 @@ plugins {
     id 'idea'
     id 'eclipse'
     id 'net.neoforged.gradle.userdev' version '7.0.+'
+    id 'net.neoforged.gradle.mixin' version '7.0.+'
 }
 
 archivesBaseName = "${mod_id}-forge"
@@ -31,8 +32,6 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
-    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
-
     implementation project(":Common")
 }
 
@@ -43,8 +42,6 @@ tasks.compileJava {
 processResources {
     from project(":Common").sourceSets.main.resources
 }
-
-//jar.finalizedBy('reobfJar')
 
 def ENV = System.getenv()
 def release_title = "[Forge] v${version}"
