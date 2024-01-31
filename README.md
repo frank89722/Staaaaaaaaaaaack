@@ -16,9 +16,11 @@ The name contains 12 'a's btw. 🍔
 ![Mod show case](https://cdn.modrinth.com/data/myL7fuqp/images/ae86decac06068d8aed8af5aa82648d83b2ddb6e.gif)
 
 
-| MC version | Forge  | Fabric |
-|:----------:|:------:|:------:|
-|   1.20.x   |  main  |  main  |
-|   1.19.4   |  EOL   |  EOL   |
-|   1.19.2   | active | active |
-|   1.18.2   | active | active |
+| MC version | NeoForge | Fabric |  Forge   |
+|:----------:|:--------:|:------:|:--------:|
+|   1.20.4   |   main   |  main  |    -     |
+|   1.20.2   |   EOL    |  EOL   |    -     |
+|   1.20.1   |   EOL    | active |  active  |
+|   1.19.4   |    -     | active |  active  |
+|   1.19.2   |    -     |  EOL   |   EOL    |
+|   1.18.2   |    -     |  EOL   |   EOL    |

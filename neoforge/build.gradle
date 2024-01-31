@@ -1,0 +1,81 @@
+plugins {
+    id 'io.github.CDAGaming.cursegradle' version '1.+'
+    id "com.modrinth.minotaur" version "2.+"
+    id 'idea'
+    id 'eclipse'
+    id 'net.neoforged.gradle.userdev' version '7.0.80'
+    id 'net.neoforged.gradle.mixin' version '7.0.80'
+}
+
+archivesBaseName = "${mod_id}-neoforge"
+
+runs {
+    configureEach {
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+        systemProperty 'mixin.debug.export', 'true'
+        systemProperty 'forge.logging.console.level', 'debug'
+
+        modSource project.sourceSets.main
+    }
+
+    client {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+    }
+
+    server {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        programArgument '--nogui'
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies {
+    implementation "net.neoforged:neoforge:${neo_version}"
+    implementation project(":common")
+}
+
+tasks.compileJava {
+    source(project(":common").sourceSets.main.allSource)
+}
+
+processResources {
+    from project(":common").sourceSets.main.resources
+}
+
+def ENV = System.getenv()
+def release_title = "[NeoForge] v${version}"
+
+if (ENV.CF_TOKEN) {
+    curseforge {
+        apiKey = ENV.CF_TOKEN
+        project {
+            id = curse_id
+            releaseType = release_type
+            addGameVersion "NeoForge"
+            addGameVersion "Java 17"
+            addGameVersion "Server"
+            addGameVersion "Client"
+            addGameVersion minecraft_version
+            mainArtifact(jar) {
+                it.displayName = release_title
+            }
+            changelog = rootProject.file('changelog.md')
+            changelogType = 'markdown'
+        }
+    }
+}
+
+if (ENV.MODRINTH_TOKEN) {
+    modrinth {
+        token = ENV.MODRINTH_TOKEN
+        projectId = modrinth_id
+        versionType = release_type
+        versionName = release_title
+        versionNumber = "${version}+neoforge"
+        uploadFile = jar
+        gameVersions = [ minecraft_version ]
+        loaders = [ "neoforge" ]
+        changelog = rootProject.file('changelog.md').text
+    }
+}

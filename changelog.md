@@ -1,2 +1,2 @@
-- Update to MC1.20.2
-- Switch to NeoForge
+- Update to MC1.20.4
+- OwO
