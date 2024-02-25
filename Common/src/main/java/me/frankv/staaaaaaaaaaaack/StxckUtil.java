@@ -125,7 +125,7 @@ public class StxckUtil {
         if (Objects.equals(itemEntity.getOwner(), itemEntity1.getOwner())
                 && areMergable(itemEntity, itemEntity1)
         ) {
-            if (getTotalCount(itemEntity1) < getTotalCount(itemEntity)) {
+            if (getTotalCount(itemEntity1) <= getTotalCount(itemEntity)) {
                 merge(itemEntity, itemEntity1);
             } else {
                 merge(itemEntity1, itemEntity);
