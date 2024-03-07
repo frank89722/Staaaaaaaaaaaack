@@ -6,6 +6,7 @@ public class StxckNeoForgeClientConfig implements StxckClientConfig {
     private final ModConfigSpec.IntValue minItemCountRenderDistance;
     private final ModConfigSpec.DoubleValue overlaySizeMultiplier;
     private final ModConfigSpec.BooleanValue alwaysShowItemCount;
+    private final ModConfigSpec.EnumValue<StxckClientConfig.OverlayDisplayMode> overlayDisplayMode;
 
 
     public StxckNeoForgeClientConfig(ModConfigSpec.Builder builder) {
@@ -25,6 +26,10 @@ public class StxckNeoForgeClientConfig implements StxckClientConfig {
                 .comment("Default: false")
                 .define("alwaysShowItemCount", false);
 
+        overlayDisplayMode = builder
+                .comment("Default: STACK_COUNT")
+                .defineEnum("overlayDisplayMode", OverlayDisplayMode.STACK_COUNT);
+
         builder.pop();
     }
 
@@ -41,5 +46,10 @@ public class StxckNeoForgeClientConfig implements StxckClientConfig {
     @Override
     public boolean isAlwaysShowItemCount() {
         return alwaysShowItemCount.get();
+    }
+
+    @Override
+    public OverlayDisplayMode getOverlayDisplayMode() {
+        return overlayDisplayMode.get();
     }
 }
