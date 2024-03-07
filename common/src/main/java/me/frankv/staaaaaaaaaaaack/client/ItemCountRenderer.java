@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 
-import static me.frankv.staaaaaaaaaaaack.StxckUtil.getOverlayTextSupplier;
+import static me.frankv.staaaaaaaaaaaack.StxckUtil.getOverlayText;
 
 public class ItemCountRenderer {
 
@@ -23,7 +23,7 @@ public class ItemCountRenderer {
         var player = Minecraft.getInstance().player;
         if (player != null && player.isShiftKeyDown()) return;
 
-        getOverlayTextSupplier(entity).get().ifPresent(itemCount -> {
+        getOverlayText(entity).ifPresent(itemCount -> {
             var scale = 0.025f * (float) Staaaaaaaaaaaack.clientConfig.getOverlaySizeMultiplier();
             poseStack.pushPose();
             poseStack.translate(0d, entity.getBbHeight() + 0.75f, 0d);

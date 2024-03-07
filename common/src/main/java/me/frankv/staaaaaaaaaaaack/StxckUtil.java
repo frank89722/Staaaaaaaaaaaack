@@ -77,17 +77,17 @@ public class StxckUtil {
         return entity.isAlive() && pickupDelay != 32767 && age != -32768 && age < 6000;
     }
 
-    public static Supplier<Optional<String>> getOverlayTextSupplier(ItemEntity entity) {
+    public static Optional<String> getOverlayText(ItemEntity entity) {
         boolean alwaysShowItemCount = Staaaaaaaaaaaack.clientConfig.isAlwaysShowItemCount();
 
         return switch(Staaaaaaaaaaaack.clientConfig.getOverlayDisplayMode()) {
-            case ITEM_COUNT -> () -> StxckUtil.getTotalCountOverlayText(entity, alwaysShowItemCount);
-            case STACK_COUNT -> () -> {
+            case ITEM_COUNT -> StxckUtil.getTotalCountOverlayText(entity, alwaysShowItemCount);
+            case STACK_COUNT -> {
                 var maxStackSize = entity.getItem().getMaxStackSize();
                 var stackCount = (int) Math.ceil((double) getTotalCount(entity) / maxStackSize);
                 var show = stackCount > 1 || alwaysShowItemCount;
-                return show ? Optional.of(String.format("%dx", stackCount)) : Optional.empty();
-            };
+                yield show ? Optional.of(String.format("%dx", stackCount)) : Optional.empty();
+            }
         };
     }
 
