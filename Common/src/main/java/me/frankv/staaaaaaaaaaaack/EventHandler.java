@@ -24,11 +24,12 @@ public class EventHandler {
         );
 
         for(var nearByEntity : nearByEntities) {
-            tryToMerge(nearByEntity, itemEntity);
+            tryToMerge(nearByEntity, itemEntity, true);
             if (itemEntity.isRemoved()) {
                 eventCanceller.run();
                 break;
             }
         }
     }
+    
 }
