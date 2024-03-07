@@ -135,10 +135,14 @@ public class StxckUtil {
     }
 
     public static void tryToMerge(ItemEntity itemEntity, ItemEntity itemEntity1) {
+        tryToMerge(itemEntity, itemEntity1, false);
+    }
+
+    public static void tryToMerge(ItemEntity itemEntity, ItemEntity itemEntity1, boolean mergeToExisted) {
         if (Objects.equals(itemEntity.getOwner(), itemEntity1.getOwner())
                 && areMergable(itemEntity, itemEntity1)
         ) {
-            if (getTotalCount(itemEntity1) <= getTotalCount(itemEntity)) {
+            if (mergeToExisted || getTotalCount(itemEntity1) < getTotalCount(itemEntity)) {
                 merge(itemEntity, itemEntity1);
             } else {
                 merge(itemEntity1, itemEntity);
