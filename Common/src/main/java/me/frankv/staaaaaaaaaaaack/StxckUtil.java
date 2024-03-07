@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiPredicate;
+import java.util.function.Supplier;
 
 public class StxckUtil {
     public static final String EXTRA_ITEM_COUNT_TAG = "StxckExtraItemCount";
@@ -77,9 +78,22 @@ public class StxckUtil {
         return entity.isAlive() && pickupDelay != 32767 && age != -32768 && age < 6000;
     }
 
-    public static Optional<String> getTotalCountForDisplay(ItemEntity entity) {
-        var total = getTotalCount(entity);
+    public static Supplier<Optional<String>> getOverlayTextSupplier(ItemEntity entity) {
         boolean alwaysShowItemCount = Staaaaaaaaaaaack.clientConfig.isAlwaysShowItemCount();
+
+        return switch(Staaaaaaaaaaaack.clientConfig.getOverlayDisplayMode()) {
+            case ITEM_COUNT -> () -> StxckUtil.getTotalCountOverlayText(entity, alwaysShowItemCount);
+            case STACK_COUNT -> () -> {
+                var maxStackSize = entity.getItem().getMaxStackSize();
+                var stackCount = (int) Math.ceil((double) getTotalCount(entity) / maxStackSize);
+                var show = stackCount > 1 || alwaysShowItemCount;
+                return show ? Optional.of(String.format("%dx", stackCount)) : Optional.empty();
+            };
+        };
+    }
+
+    private static Optional<String> getTotalCountOverlayText(ItemEntity entity, boolean alwaysShowItemCount) {
+        var total = getTotalCount(entity);
 
         if (total >= 1_000_000_000) {
             return Optional.of(String.format("%.3fB", total/1_000_000_000f));
