@@ -9,11 +9,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,15 +23,21 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import java.util.UUID;
 
 import static me.frankv.staaaaaaaaaaaack.StxckUtil.*;
 
 @ParametersAreNonnullByDefault
 @Mixin(ItemEntity.class)
 public abstract class ItemEntityMixin extends Entity {
+    @Shadow @Nullable private UUID thrower;
     @Unique
     private static final EntityDataAccessor<Integer> STXCK_DATA_EXTRA_ITEM_COUNT;
+    @Unique
+    private static final EntityDataAccessor<ItemStack> STXCK_DATA_ORIGINAL_ITEM_STACK;
 
     @Unique
     private boolean discardedTick = false;
@@ -37,7 +45,8 @@ public abstract class ItemEntityMixin extends Entity {
 
     static {
         STXCK_DATA_EXTRA_ITEM_COUNT = SynchedEntityData.defineId(ItemEntityMixin.class, EntityDataSerializers.INT);
-        setDataExtraItemCount(STXCK_DATA_EXTRA_ITEM_COUNT);
+        STXCK_DATA_ORIGINAL_ITEM_STACK = SynchedEntityData.defineId(ItemEntityMixin.class, EntityDataSerializers.ITEM_STACK);
+        setData(STXCK_DATA_EXTRA_ITEM_COUNT, STXCK_DATA_ORIGINAL_ITEM_STACK);
     }
 
     public ItemEntityMixin(EntityType<?> entityType, Level level) {
@@ -51,19 +60,31 @@ public abstract class ItemEntityMixin extends Entity {
     )
     private void constructorSetExtraCountInject(ItemEntity itemEntity, CallbackInfo ci) {
         setExtraItemCount(getThis(), getExtraItemCount(itemEntity));
+        setOriginalStack(getThis(), getOriginalStack(itemEntity));
     }
 
     @Inject(
             method = "<init>(Lnet/minecraft/world/level/Level;DDDLnet/minecraft/world/item/ItemStack;DDD)V",
             at = @At("RETURN")
     )
-    private void constructorSetExtraCountInject(CallbackInfo ci) {
+    private void constructorSetExtraCountInject(Level level, double $$1, double $$2, double $$3, ItemStack stack, double $$5, double $$6, double $$7, CallbackInfo ci) {
         setExtraItemCount(getThis(), 0);
+        setOriginalStack(getThis(), stack);
+    }
+
+    @Inject(
+            method = "<init>(Lnet/minecraft/world/level/Level;DDDLnet/minecraft/world/item/ItemStack;)V",
+            at = @At("RETURN")
+    )
+    private void constructorSetExtraCountInject(Level $$0, double $$1, double $$2, double $$3, ItemStack stack, CallbackInfo ci) {
+        setExtraItemCount(getThis(), 0);
+        setOriginalStack(getThis(), stack);
     }
 
     @Inject(method = "defineSynchedData", at = @At("RETURN"))
     private void defineSynchedDataForExtraItemCount(CallbackInfo ci) {
         getThis().getEntityData().define(STXCK_DATA_EXTRA_ITEM_COUNT, 0);
+        getThis().getEntityData().define(STXCK_DATA_ORIGINAL_ITEM_STACK, ItemStack.EMPTY);
     }
 
     @Inject(
@@ -77,6 +98,10 @@ public abstract class ItemEntityMixin extends Entity {
     private void tickInject(CallbackInfo ci) {
         discardedTick = false;
         refillItemStack(getThis());
+        var self = getThis();
+        if (self.getItem().isEmpty()) {
+            self.discard();
+        }
     }
 
     @Inject(method = "isMergable", at = @At("HEAD"), cancellable = true)
@@ -136,14 +161,33 @@ public abstract class ItemEntityMixin extends Entity {
 
     @Inject(method = "setItem", at = @At("HEAD"), cancellable = true)
     private void handleSetEmpty(ItemStack item, CallbackInfo ci) {
+        var self = getThis();
+        if (item != ItemStack.EMPTY && !item.is(Items.AIR)) {
+            if (self.getItem().isEmpty()) return;
+            var originalStack = getOriginalStack(getThis());
+            if (areMergable(originalStack, item)) return;
+
+            var copied = originalStack.copy();
+
+            var oldExtraCount = getExtraItemCount(self);
+            var theCount = Math.min(oldExtraCount, originalStack.getMaxStackSize());
+            setExtraItemCount(self, 0);
+            setOriginalStack(self, item);
+            if (theCount <= 0) return;
+            copied.setCount(theCount);
+            var newItemEntity = new ItemEntity(self.level(), self.getX(), self.getY(), self.getZ(), copied);
+            setExtraItemCount(newItemEntity, Math.min(0, oldExtraCount - originalStack.getMaxStackSize()));
+            newItemEntity.setDeltaMovement(self.getDeltaMovement());
+            newItemEntity.level().addFreshEntity(newItemEntity);
+        }
+
         if (discardedTick) {
             ci.cancel();
             return;
         }
-        if (item != ItemStack.EMPTY && !item.is(Items.AIR)) return;
-        var self = getThis();
         if (getExtraItemCount(self) <= 0) return;
-        var copied = self.getItem().copy();
+//        var copied = self.getItem().copy();
+        var copied = getOriginalStack(getThis()).copy();
         if (!copied.isEmpty()) {
             self.setItem(copied);
             copied.setCount(0);

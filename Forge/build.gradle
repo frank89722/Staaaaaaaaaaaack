@@ -81,6 +81,10 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
+    implementation fg.deobf("maven.modrinth:modular-routers:12.1.1")
+    implementation fg.deobf("maven.modrinth:create:1.20.1-0.5.1.f")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:15.2.0.22")
+
     implementation project(":Common")
 }
 

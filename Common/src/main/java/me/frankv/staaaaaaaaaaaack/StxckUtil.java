@@ -3,6 +3,7 @@ package me.frankv.staaaaaaaaaaaack;
 import me.frankv.staaaaaaaaaaaack.mixin.ItemEntityAccessor;
 import me.frankv.staaaaaaaaaaaack.mixin.ItemStackAccessor;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -17,18 +18,19 @@ import java.util.function.Supplier;
 public class StxckUtil {
     public static final String EXTRA_ITEM_COUNT_TAG = "StxckExtraItemCount";
     private static EntityDataAccessor<Integer> DATA_EXTRA_ITEM_COUNT;
+    private static EntityDataAccessor<ItemStack> DATA_ORIGINAL_ITEM_STACK;
 
     public static BiPredicate<ItemStack, ItemStack> areMergableReplacementPredicate;
 
 
-    public static void setDataExtraItemCount(EntityDataAccessor<Integer> entityDataAccessor) {
-        if (DATA_EXTRA_ITEM_COUNT != null) return;
-        DATA_EXTRA_ITEM_COUNT = entityDataAccessor;
+    public static void setData(EntityDataAccessor<Integer> extraItemCountAccessor, EntityDataAccessor<ItemStack> originalItemAccessor) {
+        DATA_EXTRA_ITEM_COUNT = extraItemCountAccessor;
+        DATA_ORIGINAL_ITEM_STACK = originalItemAccessor;
     }
 
     public static void refillItemStack(ItemEntity entity) {
         var extraItemCount = getExtraItemCount(entity);
-        if (extraItemCount <= 0) return ;
+        if (extraItemCount <= 0) return;
 
         var stack = entity.getItem();
         Optional.ofNullable(((ItemStackAccessor) (Object) stack).accessItem())
@@ -51,8 +53,10 @@ public class StxckUtil {
             return false;
         }
 
-        var itemStack = itemEntity.getItem();
-        var itemStack1 = itemEntity1.getItem();
+        return areMergable(itemEntity.getItem(), itemEntity1.getItem());
+    }
+
+    public static boolean areMergable(ItemStack itemStack, ItemStack itemStack1) {
         if (areMergableReplacementPredicate != null) {
             return areMergableReplacementPredicate.test(itemStack, itemStack1);
         }
@@ -118,8 +122,16 @@ public class StxckUtil {
         return entity.getEntityData().get(DATA_EXTRA_ITEM_COUNT);
     }
 
+    public static ItemStack getOriginalStack(ItemEntity entity) {
+        return entity.getEntityData().get(DATA_ORIGINAL_ITEM_STACK);
+    }
+
     public static void setExtraItemCount(ItemEntity entity, int count) {
         entity.getEntityData().set(DATA_EXTRA_ITEM_COUNT, count);
+    }
+
+    public static void setOriginalStack(ItemEntity entity, ItemStack stack) {
+        entity.getEntityData().set(DATA_ORIGINAL_ITEM_STACK, stack);
     }
 
     public static boolean tryRefillItemStackOnEntityRemove(Entity entity, Entity.RemovalReason reason) {
