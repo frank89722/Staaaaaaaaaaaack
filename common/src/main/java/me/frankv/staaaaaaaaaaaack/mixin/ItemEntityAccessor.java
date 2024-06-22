@@ -21,8 +21,4 @@ public interface ItemEntityAccessor {
     @Accessor @Mutable
     void setAge(int age);
 
-    @Invoker("merge")
-    static void invokeMerge(ItemEntity itemEntity, ItemStack itemStack, ItemEntity itemEntity1, ItemStack itemStack1) {
-        throw new AssertionError();
-    }
 }

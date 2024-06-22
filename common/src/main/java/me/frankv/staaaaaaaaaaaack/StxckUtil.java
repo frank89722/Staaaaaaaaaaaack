@@ -16,8 +16,6 @@ public class StxckUtil {
     public static final String EXTRA_ITEM_COUNT_TAG = "StxckExtraItemCount";
     private static EntityDataAccessor<Integer> DATA_EXTRA_ITEM_COUNT;
 
-//    public static BiPredicate<ItemStack, ItemStack> areMergableReplacementPredicate;
-
 
     public static void setDataExtraItemCount(EntityDataAccessor<Integer> entityDataAccessor) {
         if (DATA_EXTRA_ITEM_COUNT != null) return;

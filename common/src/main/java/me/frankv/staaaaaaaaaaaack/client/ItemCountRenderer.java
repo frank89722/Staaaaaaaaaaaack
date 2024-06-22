@@ -2,7 +2,6 @@ package me.frankv.staaaaaaaaaaaack.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.frankv.staaaaaaaaaaaack.Staaaaaaaaaaaack;
-import me.frankv.staaaaaaaaaaaack.mixin.client.EntityRenderDispatcherAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
