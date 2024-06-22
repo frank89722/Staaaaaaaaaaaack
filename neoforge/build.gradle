@@ -1,13 +1,16 @@
 plugins {
     id 'io.github.CDAGaming.cursegradle' version '1.+'
     id "com.modrinth.minotaur" version "2.+"
-    id 'idea'
     id 'eclipse'
-    id 'net.neoforged.gradle.userdev' version '7.0.80'
-    id 'net.neoforged.gradle.mixin' version '7.0.80'
+    id 'net.neoforged.gradle.userdev' version '7.0.145'
+    id 'net.neoforged.gradle.mixin' version '7.0.145'
 }
 
 archivesBaseName = "${mod_id}-neoforge"
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
 
 runs {
     configureEach {
@@ -53,7 +56,7 @@ if (ENV.CF_TOKEN) {
             id = curse_id
             releaseType = release_type
             addGameVersion "NeoForge"
-            addGameVersion "Java 17"
+            addGameVersion "Java 21"
             addGameVersion "Server"
             addGameVersion "Client"
             addGameVersion minecraft_version

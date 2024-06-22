@@ -47,7 +47,7 @@ public abstract class ItemEntityMixin extends Entity {
             at = @At("RETURN")
     )
     private void constructorSetExtraCountInject(ItemEntity itemEntity, CallbackInfo ci) {
-        setExtraItemCount(getThis(), getExtraItemCount(itemEntity));
+        setExtraItemCount(stxck$getThis(), getExtraItemCount(itemEntity));
     }
 
     @Inject(
@@ -55,12 +55,12 @@ public abstract class ItemEntityMixin extends Entity {
             at = @At("RETURN")
     )
     private void constructorSetExtraCountInject(CallbackInfo ci) {
-        setExtraItemCount(getThis(), 0);
+        setExtraItemCount(stxck$getThis(), 0);
     }
 
     @Inject(method = "defineSynchedData", at = @At("RETURN"))
-    private void defineSynchedDataForExtraItemCount(CallbackInfo ci) {
-        getThis().getEntityData().define(STXCK_DATA_EXTRA_ITEM_COUNT, 0);
+    private void defineSynchedDataForExtraItemCount(SynchedEntityData.Builder builder, CallbackInfo ci) {
+        builder.define(STXCK_DATA_EXTRA_ITEM_COUNT, 0);
     }
 
     @Inject(
@@ -73,21 +73,21 @@ public abstract class ItemEntityMixin extends Entity {
     )
     private void tickInject(CallbackInfo ci) {
         discardedTick = false;
-        refillItemStack(getThis());
+        refillItemStack(stxck$getThis());
     }
 
     @Inject(method = "isMergable", at = @At("HEAD"), cancellable = true)
     private void replaceIsMergable(CallbackInfoReturnable<Boolean> cir) {
-        var self = getThis();
+        var self = stxck$getThis();
         var itemStack = self.getItem();
         if (isBlackListItem(itemStack)
                 || getExtraItemCount(self) >= Staaaaaaaaaaaack.commonConfig.getMaxSize()) return;
-        cir.setReturnValue(isMergable(getThis()));
+        cir.setReturnValue(isMergable(stxck$getThis()));
     }
 
     @Inject(method = "tryToMerge", at = @At("HEAD"), cancellable = true)
     private void replaceTryToMerge(ItemEntity itemEntity1, CallbackInfo ci) {
-        var self = getThis();
+        var self = stxck$getThis();
         if (isBlackListItem(self.getItem())) return;
         tryToMerge(self, itemEntity1);
         ci.cancel();
@@ -104,7 +104,7 @@ public abstract class ItemEntityMixin extends Entity {
     private AABB mergeWithNeighbours(AABB uwu) {
         var h = Staaaaaaaaaaaack.commonConfig.getMaxMergeDistanceHorizontal();
         var v = Staaaaaaaaaaaack.commonConfig.getMaxMergeDistanceVertical();
-        return getThis().getBoundingBox().inflate(h, v, h);
+        return stxck$getThis().getBoundingBox().inflate(h, v, h);
     }
 
     @Inject(
@@ -112,7 +112,7 @@ public abstract class ItemEntityMixin extends Entity {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z")
     )
     private void saveExtraItemCount(CompoundTag compoundTag, CallbackInfo ci) {
-        var extraCount = getExtraItemCount(getThis());
+        var extraCount = getExtraItemCount(stxck$getThis());
         if (extraCount > 0) {
             compoundTag.putInt(EXTRA_ITEM_COUNT_TAG, extraCount);
         }
@@ -127,7 +127,7 @@ public abstract class ItemEntityMixin extends Entity {
     )
     private void readExtraItemCount(CompoundTag compoundTag, CallbackInfo ci) {
         if (compoundTag.contains(EXTRA_ITEM_COUNT_TAG)) {
-            setExtraItemCount(getThis(), compoundTag.getInt(EXTRA_ITEM_COUNT_TAG));
+            setExtraItemCount(stxck$getThis(), compoundTag.getInt(EXTRA_ITEM_COUNT_TAG));
         }
     }
 
@@ -138,7 +138,7 @@ public abstract class ItemEntityMixin extends Entity {
             return;
         }
         if (item != ItemStack.EMPTY && !item.is(Items.AIR)) return;
-        var self = getThis();
+        var self = stxck$getThis();
         if (getExtraItemCount(self) <= 0) return;
         var copied = self.getItem().copy();
         if (!copied.isEmpty()) {
@@ -150,7 +150,7 @@ public abstract class ItemEntityMixin extends Entity {
 
     @Inject(method = "playerTouch", at = @At("RETURN"))
     private void syncItemOnPickup(Player player, CallbackInfo ci) {
-        var self = getThis();
+        var self = stxck$getThis();
         var item = self.getItem();
         if (!item.isEmpty()) {
             self.setItem(item.copy());
@@ -159,7 +159,7 @@ public abstract class ItemEntityMixin extends Entity {
 
     @Override
     public void remove(RemovalReason reason) {
-        if (tryRefillItemStackOnEntityRemove(getThis(), reason)) {
+        if (tryRefillItemStackOnEntityRemove(stxck$getThis(), reason)) {
             discardedTick = true;
             unsetRemoved();
             return;
@@ -167,7 +167,8 @@ public abstract class ItemEntityMixin extends Entity {
         super.remove(reason);
     }
 
-    private ItemEntity getThis() {
+    @Unique
+    private ItemEntity stxck$getThis() {
         return (ItemEntity) (Object) this;
     }
 

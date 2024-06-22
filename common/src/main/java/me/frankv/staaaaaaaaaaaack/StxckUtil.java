@@ -11,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public class StxckUtil {
     public static final String EXTRA_ITEM_COUNT_TAG = "StxckExtraItemCount";
@@ -31,7 +30,7 @@ public class StxckUtil {
 
         var stack = entity.getItem();
         Optional.ofNullable(((ItemStackAccessor) (Object) stack).accessItem())
-                .map(Item::getMaxStackSize)
+                .map(Item::getDefaultMaxStackSize)
                 .ifPresent(maxSize -> {
                     if (stack.getCount() == maxSize) return;
                     var x = maxSize - stack.getCount();
@@ -52,17 +51,8 @@ public class StxckUtil {
 
         var itemStack = itemEntity.getItem();
         var itemStack1 = itemEntity1.getItem();
-//        if (areMergableReplacementPredicate != null) {
-//            return areMergableReplacementPredicate.test(itemStack, itemStack1);
-//        }
 
-        if (!itemStack1.is(itemStack.getItem())) {
-            return false;
-        }
-        if (itemStack1.hasTag() ^ itemStack.hasTag()) {
-            return false;
-        }
-        return !itemStack1.hasTag() || Objects.equals(itemStack1.getTag(), itemStack.getTag());
+        return ItemStack.isSameItemSameComponents(itemStack, itemStack1);
     }
 
     public static void grow(ItemEntity entity, int count) {

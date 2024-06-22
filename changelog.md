@@ -1,2 +1,1 @@
-- Add overlay display mode config. You can now choose to display stack count on the overlay (and this is the new default setting)
-- Fix a conflict with Modular routers dropper
+- Update to MC 1.21
