@@ -3,12 +3,14 @@ package me.frankv.staaaaaaaaaaaack;
 
 import me.frankv.staaaaaaaaaaaack.config.StxckClientConfig;
 import me.frankv.staaaaaaaaaaaack.config.StxckCommonConfig;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,8 +29,12 @@ public class Staaaaaaaaaaaack {
             itemBlackList = commonConfig.getItemBlackList().stream()
                     .map(ResourceLocation::parse)
                     .map(BuiltInRegistries.ITEM::get)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .map(Holder.Reference::value)
                     .collect(Collectors.toUnmodifiableSet());
         }
         return itemBlackList;
     }
+
 }
