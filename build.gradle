@@ -4,6 +4,7 @@ plugins {
 subprojects {
     apply plugin: 'java-library'
     apply plugin: 'idea'
+    apply plugin: 'eclipse'
     
     java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 

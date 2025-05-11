@@ -14,6 +14,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,6 +26,8 @@ import static me.frankv.staaaaaaaaaaaack.StxckUtil.*;
 
 @Mixin(ItemEntity.class)
 public abstract class ItemEntityMixin extends Entity {
+    @Shadow public abstract void setExtendedLifetime();
+
     @Unique
     private static final EntityDataAccessor<Integer> STXCK_DATA_EXTRA_ITEM_COUNT;
 
@@ -122,13 +125,12 @@ public abstract class ItemEntityMixin extends Entity {
             method = "readAdditionalSaveData",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/nbt/CompoundTag;getCompound(Ljava/lang/String;)Lnet/minecraft/nbt/CompoundTag;"
+                    target = "Lnet/minecraft/world/entity/item/ItemEntity;setItem(Lnet/minecraft/world/item/ItemStack;)V"
             )
     )
     private void readExtraItemCount(CompoundTag compoundTag, CallbackInfo ci) {
-        if (compoundTag.contains(EXTRA_ITEM_COUNT_TAG)) {
-            setExtraItemCount(stxck$getThis(), compoundTag.getInt(EXTRA_ITEM_COUNT_TAG));
-        }
+        compoundTag.getInt(EXTRA_ITEM_COUNT_TAG)
+                .ifPresent(i -> setExtraItemCount(stxck$getThis(), i));
     }
 
     @Inject(method = "setItem", at = @At("HEAD"), cancellable = true)
