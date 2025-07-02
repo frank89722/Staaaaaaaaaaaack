@@ -12,6 +12,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -114,10 +116,10 @@ public abstract class ItemEntityMixin extends Entity {
             method = "addAdditionalSaveData",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z")
     )
-    private void saveExtraItemCount(CompoundTag compoundTag, CallbackInfo ci) {
+    private void saveExtraItemCount(ValueOutput valueOutput, CallbackInfo ci) {
         var extraCount = getExtraItemCount(stxck$getThis());
         if (extraCount > 0) {
-            compoundTag.putInt(EXTRA_ITEM_COUNT_TAG, extraCount);
+            valueOutput.putInt(EXTRA_ITEM_COUNT_TAG, extraCount);
         }
     }
 
@@ -128,8 +130,8 @@ public abstract class ItemEntityMixin extends Entity {
                     target = "Lnet/minecraft/world/entity/item/ItemEntity;setItem(Lnet/minecraft/world/item/ItemStack;)V"
             )
     )
-    private void readExtraItemCount(CompoundTag compoundTag, CallbackInfo ci) {
-        compoundTag.getInt(EXTRA_ITEM_COUNT_TAG)
+    private void readExtraItemCount(ValueInput valueInput, CallbackInfo ci) {
+        valueInput.getInt(EXTRA_ITEM_COUNT_TAG)
                 .ifPresent(i -> setExtraItemCount(stxck$getThis(), i));
     }
 
