@@ -1,1 +1,2 @@
-- Update to MC 1.21
+- Update to MC 1.21.1
+- Fix item duplication bug with Sophisticated Backpack
