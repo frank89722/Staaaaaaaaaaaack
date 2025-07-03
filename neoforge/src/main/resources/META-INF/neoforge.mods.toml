@@ -17,14 +17,14 @@ Drops are merged!
 [[dependencies.staaaaaaaaaaaack]]
    modId="neoforge"
    type="required"
-   versionRange="[21.0,)"
+   versionRange="[21.1,)"
    ordering="NONE"
    side="BOTH"
 
 [[dependencies.staaaaaaaaaaaack]]
    modId="minecraft"
    type="required"
-   versionRange="[1.21,1.22)"
+   versionRange="[1.21.1,1.22)"
    ordering="NONE"
    side="BOTH"
 
