@@ -152,7 +152,14 @@ public abstract class ItemEntityMixin extends Entity {
         ci.cancel();
     }
 
-    @Inject(method = "playerTouch", at = @At("RETURN"))
+    @Inject(method = "playerTouch", at = @At("HEAD"), cancellable = true)
+    private void cancelPlayerTouchOnDiscard(Player player, CallbackInfo ci) {
+        if (discardedTick) {
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "playerTouch", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/player/Player;onItemPickup(Lnet/minecraft/world/entity/item/ItemEntity;)V "))
     private void syncItemOnPickup(Player player, CallbackInfo ci) {
         var self = stxck$getThis();
         var item = self.getItem();
