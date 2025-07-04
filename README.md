@@ -18,9 +18,14 @@ The name contains 12 'a's btw. 🍔
 
 | MC version | NeoForge | Fabric |  Forge   |
 |:----------:|:--------:|:------:|:--------:|
-|   1.20.4   |   main   |  main  |    -     |
+|   1.21.7   |   main   |  main  |    -     |
+|   1.21.5   |   EOL    |  EOL   |    -     |
+|   1.21.3   |   EOL    |  EOL   |    -     |
+|   1.21.1   |  active  | active |    -     |
+|   1.21.0   |   EOL    |  EOL   |    -     |
+|   1.20.4   |   EOL    |  EOL   |    -     |
 |   1.20.2   |   EOL    |  EOL   |    -     |
-|   1.20.1   |   EOL    | active |  active  |
-|   1.19.4   |    -     | active |  active  |
+|   1.20.1   |   EOL    |  EOL   |   EOL    |
+|   1.19.4   |    -     |  EOL   |   EOL    |
 |   1.19.2   |    -     |  EOL   |   EOL    |
 |   1.18.2   |    -     |  EOL   |   EOL    |
