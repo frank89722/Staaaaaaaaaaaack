@@ -1,1 +1,1 @@
-- Update to MC 1.21.5
+- Fix item duplication issue when item pickup got cancelled in NeoForge
