@@ -1,13 +1,12 @@
 package me.frankv.staaaaaaaaaaaack.mixin.client;
 
+import me.frankv.staaaaaaaaaaaack.Stxck;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-
-import static me.frankv.staaaaaaaaaaaack.StxckUtil.*;
 
 @Mixin(ClientPacketListener.class)
 public class ClientPacketListenerMixin {
@@ -22,7 +21,7 @@ public class ClientPacketListenerMixin {
     )
     private void handleRemoveItemEntity(ClientLevel instance, int entityId, Entity.RemovalReason reason) {
         var entity = getThis().getLevel().getEntity(entityId);
-        if (entity == null || tryRefillItemStackOnEntityRemove(entity, reason)) return;
+        if (entity == null || Stxck.tryRefillItemStackOnEntityRemove(entity, reason)) return;
         getThis().getLevel().removeEntity(entityId, reason);
     }
 
