@@ -5,12 +5,12 @@ import io.github.fablabsmc.fablabs.api.fiber.v1.schema.type.derived.ListConfigTy
 import io.github.fablabsmc.fablabs.api.fiber.v1.tree.ConfigTree;
 import io.github.fablabsmc.fablabs.api.fiber.v1.tree.PropertyMirror;
 import lombok.Getter;
-import me.frankv.staaaaaaaaaaaack.Staaaaaaaaaaaack;
+import me.frankv.staaaaaaaaaaaack.Stxck;
 
 import java.util.List;
 
 public class StxckFiberCommonConfig implements StxckCommonConfig {
-    public static final String fileName = Staaaaaaaaaaaack.MODID + "-common.json5";
+    public static final String fileName = Stxck.MODID + "-common.json5";
 
     private static final ListConfigType<List<String>, String> stringListConfigType = ConfigTypes.makeList(ConfigTypes.STRING);
 

@@ -5,7 +5,6 @@ import me.frankv.staaaaaaaaaaaack.config.StxckFiberClientConfig;
 import me.frankv.staaaaaaaaaaaack.config.StxckFiberCommonConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 public class StxckFabricInitializer implements ModInitializer, ClientModInitializer {
 
@@ -14,13 +13,13 @@ public class StxckFabricInitializer implements ModInitializer, ClientModInitiali
         var config = new StxckFiberCommonConfig();
         FiberUtils.setup(config.getConfigTree(), StxckFiberCommonConfig.fileName);
 
-        Staaaaaaaaaaaack.commonConfig = config;
+        Stxck.commonConfig = config;
     }
 
     @Override
     public void onInitializeClient() {
         var config = new StxckFiberClientConfig();
-        Staaaaaaaaaaaack.clientConfig = config;
+        Stxck.clientConfig = config;
         FiberUtils.setup(config.getConfigTree(), StxckFiberClientConfig.fileName);
     }
 

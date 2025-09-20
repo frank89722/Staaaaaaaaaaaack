@@ -1,7 +1,7 @@
 package me.frankv.staaaaaaaaaaaack.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import me.frankv.staaaaaaaaaaaack.Staaaaaaaaaaaack;
+import me.frankv.staaaaaaaaaaaack.Stxck;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 
-import static me.frankv.staaaaaaaaaaaack.StxckUtil.getOverlayText;
+import static me.frankv.staaaaaaaaaaaack.Stxck.getOverlayText;
 
 public class ItemCountRenderer {
 
@@ -24,7 +24,7 @@ public class ItemCountRenderer {
         if (player != null && player.isShiftKeyDown()) return;
 
         getOverlayText(entity).ifPresent(itemCount -> {
-            var scale = 0.025f * (float) Staaaaaaaaaaaack.clientConfig.getOverlaySizeMultiplier();
+            var scale = 0.025f * (float) Stxck.clientConfig.getOverlaySizeMultiplier();
             poseStack.pushPose();
             poseStack.translate(0d, entity.getBbHeight() + 0.75f, 0d);
             poseStack.mulPose(entityRenderDispatcher.cameraOrientation());

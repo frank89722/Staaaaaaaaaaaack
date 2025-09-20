@@ -1,7 +1,7 @@
 package me.frankv.staaaaaaaaaaaack.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import me.frankv.staaaaaaaaaaaack.Staaaaaaaaaaaack;
+import me.frankv.staaaaaaaaaaaack.Stxck;
 import me.frankv.staaaaaaaaaaaack.client.ItemCountRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -40,7 +40,7 @@ public abstract class LevelRendererMixin {
             CallbackInfo ci
     ) {
         if (entityRenderDispatcher.camera == null) return; // Optifine still leaves this as null when renderEntity is called
-        var maxDistance = Staaaaaaaaaaaack.clientConfig.getMinItemCountRenderDistance();
+        var maxDistance = Stxck.clientConfig.getMinItemCountRenderDistance();
         if (entityRenderDispatcher.distanceToSqr(entity) > maxDistance * maxDistance) return;
         if (entity instanceof ItemEntity itemEntity) {
             var offset = entityRenderDispatcher.getRenderer(entity).getRenderOffset(entity, partialTicks);

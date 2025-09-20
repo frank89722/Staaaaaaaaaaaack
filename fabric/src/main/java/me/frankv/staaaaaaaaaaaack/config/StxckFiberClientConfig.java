@@ -5,11 +5,11 @@ import io.github.fablabsmc.fablabs.api.fiber.v1.schema.type.derived.EnumConfigTy
 import io.github.fablabsmc.fablabs.api.fiber.v1.tree.ConfigTree;
 import io.github.fablabsmc.fablabs.api.fiber.v1.tree.PropertyMirror;
 import lombok.Getter;
-import me.frankv.staaaaaaaaaaaack.Staaaaaaaaaaaack;
+import me.frankv.staaaaaaaaaaaack.Stxck;
 
 
 public class StxckFiberClientConfig implements StxckClientConfig {
-    public static final String fileName = Staaaaaaaaaaaack.MODID + "-client.json5";
+    public static final String fileName = Stxck.MODID + "-client.json5";
 
     @Getter
     private final ConfigTree configTree;
