@@ -21,7 +21,10 @@ public class StxckFiberCommonConfig implements StxckCommonConfig {
     private final PropertyMirror<Double> maxMergeDistanceVertical = PropertyMirror.create(ConfigTypes.DOUBLE);
     private final PropertyMirror<Integer> maxSize = PropertyMirror.create(ConfigTypes.INTEGER);
     private final PropertyMirror<Boolean> enableForUnstackableItem = PropertyMirror.create(ConfigTypes.BOOLEAN);
-    private final PropertyMirror<List<String>> itemBlackList = PropertyMirror.create(stringListConfigType);
+    private final PropertyMirror<Boolean> itemListAsWhiteList = PropertyMirror.create(ConfigTypes.BOOLEAN);
+    private final PropertyMirror<List<String>> itemList = PropertyMirror.create(stringListConfigType);
+    private final PropertyMirror<Boolean> dimensionListAsWhiteList = PropertyMirror.create(ConfigTypes.BOOLEAN);
+    private final PropertyMirror<List<String>> dimensionList = PropertyMirror.create(stringListConfigType);
 
     public StxckFiberCommonConfig() {
         var builder = ConfigTree.builder();
@@ -58,14 +61,39 @@ public class StxckFiberCommonConfig implements StxckCommonConfig {
                         """)
                 .finishValue(enableForUnstackableItem::mirror);
 
-        builder.beginValue("itemBlackList", stringListConfigType, List.of())
+        builder.beginValue("itemListAsWhitelist", ConfigTypes.BOOLEAN, false)
                 .withComment("""
                         
-                        The list of items that should not exceed their original max stack size.
-                        You can achieve the same feature by using the item tag "#staaaaaaaaaaaack:blacklist" as well.
+                        Set this "true" to make `itemList` a whitelist, it's a blacklist when set to "false".
+                        Default: false
+                        """)
+                .finishValue(itemListAsWhiteList::mirror);
+
+        builder.beginValue("itemList", stringListConfigType, List.of())
+                .withComment("""
+                        
+                        The list of items that should or should not exceed their original max stack size.
+                        Or You can by using the item tag "#staaaaaaaaaaaack:blacklist" to blacklist the item.
                         e.g., ["minecraft:diamond_block", "minecraft:coal"]
                         """)
-                .finishValue(itemBlackList::mirror);
+                .finishValue(itemList::mirror);
+
+        builder.beginValue("dimensionListAsWhitelist", ConfigTypes.BOOLEAN, false)
+                .withComment("""
+                        
+                        Set this "true" to make `dimensionList` a whitelist, it's a blacklist when set to "false".
+                        Default: false
+                        """)
+                .finishValue(dimensionListAsWhiteList::mirror);
+
+        builder.beginValue("dimensionList", stringListConfigType, List.of())
+                .withComment("""
+                        
+                        The list of dimension that should or should not make item exceed their original max stack size.
+                        e.g., ["minecraft:overworld", "minecraft:the_nether"]
+                        """
+                )
+                .finishValue(dimensionList::mirror);
 
         configTree = builder.build();
     }
@@ -91,7 +119,62 @@ public class StxckFiberCommonConfig implements StxckCommonConfig {
     }
 
     @Override
-    public List<? extends String> getItemBlackList() {
-        return itemBlackList.getValue();
+    public boolean isItemListAsWhitelist() {
+        return itemListAsWhiteList.getValue();
+    }
+
+    @Override
+    public List<? extends String> getItemList() {
+        return itemList.getValue();
+    }
+
+    @Override
+    public boolean isDimensionListAsWhitelist() {
+        return dimensionListAsWhiteList.getValue();
+    }
+
+    @Override
+    public List<? extends String> getDimensionList() {
+        return dimensionList.getValue();
+    }
+
+    @Override
+    public CleanDropsScheduler getCleanDropsScheduler() {
+        return null;
+    }
+
+    @Override
+    public int getCleanDropsIntervalSeconds() {
+        return 0;
+    }
+
+    @Override
+    public int getCleanDropsItemCountThreshold() {
+        return 0;
+    }
+
+    @Override
+    public boolean onlyCleanSingleItemType() {
+        return false;
+    }
+
+    @Override
+    public boolean isCleanDropsItemListAsWhitelist() {
+        return false;
+    }
+
+    @Override
+    public List<? extends String> getCleanDropsItemList() {
+        return List.of();
+    }
+
+    @Override
+    public boolean isCleanDropsDimensionListAsWhitelist() {
+        return false;
+    }
+
+    @Override
+    public List<? extends String> getCleanDropsDimensionList() {
+        return List.of();
     }
 }

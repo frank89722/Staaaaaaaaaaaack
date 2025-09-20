@@ -16,6 +16,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -27,22 +28,32 @@ public class Stxck {
 
     public static final TagKey<Item> BLACK_LIST_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "blacklist"));
     public static final String EXTRA_ITEM_COUNT_TAG = "StxckExtraItemCount";
-    private static Set<Item> itemBlackList;
+    private static Set<Item> itemList;
+    private static Set<ResourceLocation> dimensionList;
 
     public static StxckCommonConfig commonConfig;
     public static StxckClientConfig clientConfig;
     private static EntityDataAccessor<Integer> DATA_EXTRA_ITEM_COUNT;
 
 
-    private static Set<Item> getItemBlackList() {
-        if (itemBlackList == null) {
-            itemBlackList = commonConfig.getItemBlackList().stream()
+    private static Set<Item> getItemList() {
+        if (itemList == null) {
+            itemList = commonConfig.getItemList().stream()
                     .map(ResourceLocation::parse)
                     .map(BuiltInRegistries.ITEM::get)
                     .collect(Collectors.toUnmodifiableSet());
 
         }
-        return itemBlackList;
+        return itemList;
+    }
+
+    private static Set<ResourceLocation> getDimensionList() {
+        if (dimensionList == null) {
+            dimensionList = commonConfig.getDimensionList().stream()
+                    .map(ResourceLocation::parse)
+                    .collect(Collectors.toUnmodifiableSet());
+        }
+        return dimensionList;
     }
 
     public static void setDataExtraItemCount(EntityDataAccessor<Integer> entityDataAccessor) {
@@ -52,7 +63,7 @@ public class Stxck {
 
     public static void refillItemStack(ItemEntity entity) {
         var extraItemCount = getExtraItemCount(entity);
-        if (extraItemCount <= 0) return ;
+        if (extraItemCount <= 0) return;
 
         var stack = entity.getItem();
         Optional.ofNullable(((ItemStackAccessor) (Object) stack).accessItem())
@@ -96,7 +107,7 @@ public class Stxck {
     public static Optional<String> getOverlayText(ItemEntity entity) {
         boolean alwaysShowItemCount = clientConfig.isAlwaysShowItemCount();
 
-        return switch(clientConfig.getOverlayDisplayMode()) {
+        return switch (clientConfig.getOverlayDisplayMode()) {
             case ITEM_COUNT -> getTotalCountOverlayText(entity, alwaysShowItemCount);
             case STACK_COUNT -> {
                 var maxStackSize = entity.getItem().getMaxStackSize();
@@ -111,13 +122,13 @@ public class Stxck {
         var total = getTotalCount(entity);
 
         if (total >= 1_000_000_000) {
-            return Optional.of(String.format("%.3fB", total/1_000_000_000f));
+            return Optional.of(String.format("%.3fB", total / 1_000_000_000f));
         }
         if (total >= 1_000_000) {
-            return Optional.of(String.format("%.2fM", total/1_000_000f));
+            return Optional.of(String.format("%.2fM", total / 1_000_000f));
         }
         if (total >= 10_000) {
-            return Optional.of(String.format("%.1fK", total/1_000f));
+            return Optional.of(String.format("%.1fK", total / 1_000f));
         }
         if (alwaysShowItemCount || total > entity.getItem().getMaxStackSize()) {
             return Optional.of(String.valueOf(total));
@@ -180,12 +191,18 @@ public class Stxck {
         supplier.discard();
     }
 
-    public static boolean isBlackListItem(ItemStack itemStack) {
+    public static boolean isBlackListItem(ItemEntity itemEntity) {
+        var dim = itemEntity.level().dimension().location();
+        if (getDimensionList().contains(dim) ^ commonConfig.isDimensionListAsWhitelist()) {
+            return true;
+        }
+
+        var itemStack = itemEntity.getItem();
         if (!commonConfig.isEnableForUnstackableItem() && itemStack.getMaxStackSize() == 1) {
             return true;
         }
 
         return itemStack.is(BLACK_LIST_TAG)
-                || getItemBlackList().contains(itemStack.getItem());
+                || getItemList().contains(itemStack.getItem()) ^ commonConfig.isItemListAsWhitelist();
     }
 }
