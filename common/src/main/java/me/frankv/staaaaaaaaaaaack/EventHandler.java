@@ -10,7 +10,7 @@ public class EventHandler {
 
     public static void onEntityCreate(Entity entity, Runnable eventCanceller) {
         if (!(entity instanceof ItemEntity itemEntity && Stxck.isMergable(itemEntity))
-                || Stxck.isBlackListItem(itemEntity.getItem())) return;
+                || Stxck.isBlackListItem(itemEntity)) return;
 
         var h = config.getMaxMergeDistanceHorizontal();
         var v = config.getMaxMergeDistanceVertical();

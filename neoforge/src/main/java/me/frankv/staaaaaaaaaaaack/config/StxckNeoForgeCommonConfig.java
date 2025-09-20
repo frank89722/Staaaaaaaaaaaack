@@ -10,7 +10,10 @@ public class StxckNeoForgeCommonConfig implements StxckCommonConfig {
     private final ModConfigSpec.DoubleValue maxMergeDistanceVertical;
     private final ModConfigSpec.IntValue maxSize;
     private final ModConfigSpec.BooleanValue enableForUnstackableItem;
-    private final ModConfigSpec.ConfigValue<List<? extends String>> itemBlackList;
+    private final ModConfigSpec.BooleanValue itemListAsWhitelist;
+    private final ModConfigSpec.ConfigValue<List<? extends String>> itemList;
+    private final ModConfigSpec.BooleanValue dimensionListAsWhitelist;
+    private final ModConfigSpec.ConfigValue<List<? extends String>> dimensionList;
 
 
     public StxckNeoForgeCommonConfig(ModConfigSpec.Builder builder) {
@@ -37,11 +40,28 @@ public class StxckNeoForgeCommonConfig implements StxckCommonConfig {
                 .comment("Default: false")
                 .define("enableForUnstackableItem", false);
 
-        itemBlackList = builder
-                .comment("The list of items that should not exceed their original max stack size.")
-                .comment("You can achieve the same feature by using the item tag \"#staaaaaaaaaaaack:blacklist\" as well.")
+        itemListAsWhitelist = builder
+                .comment("Set this \"true\" to make `itemList` a whitelist, it's a blacklist when set to \"false\".")
+                .comment("Default: false")
+                .define("itemListAsWhitelist", false);
+
+        itemList = builder
+                .comment("The list of items that should or should not exceed their original max stack size.")
+                .comment("Or You can by using the item tag \"#staaaaaaaaaaaack:blacklist\" to blacklist the item.")
                 .comment("e.g., [\"minecraft:diamond_block\", \"minecraft:coal\"]")
-                .defineList("itemBlackList", ArrayList::new, o -> o instanceof String);
+                .defineList("itemList", ArrayList::new, () -> "",o -> o instanceof String);
+
+        dimensionListAsWhitelist = builder
+                .comment("Set this \"true\" to make `dimensionList` a whitelist, it's a blacklist when set to " +
+                        "\"false\".")
+                .comment("Default: false")
+                .define("dimensionListAsWhitelist", false);
+
+        dimensionList = builder
+                .comment("The list of dimension that should or should not make item exceed their original max stack " +
+                        "size.")
+                .comment("e.g., [\"minecraft:overworld\", \"minecraft:the_nether\"]")
+                .defineList("dimensionList", ArrayList::new, () -> "",o -> o instanceof String);
 
         builder.pop();
     }
@@ -66,7 +86,62 @@ public class StxckNeoForgeCommonConfig implements StxckCommonConfig {
     }
 
     @Override
-    public List<? extends String> getItemBlackList() {
-        return itemBlackList.get();
+    public boolean isItemListAsWhitelist() {
+        return itemListAsWhitelist.get();
+    }
+
+    @Override
+    public List<? extends String> getItemList() {
+        return itemList.get();
+    }
+
+    @Override
+    public boolean isDimensionListAsWhitelist() {
+        return dimensionListAsWhitelist.get();
+    }
+
+    @Override
+    public List<? extends String> getDimensionList() {
+        return dimensionList.get();
+    }
+
+    @Override
+    public CleanDropsScheduler getCleanDropsScheduler() {
+        return null;
+    }
+
+    @Override
+    public int getCleanDropsIntervalSeconds() {
+        return 0;
+    }
+
+    @Override
+    public int getCleanDropsItemCountThreshold() {
+        return 0;
+    }
+
+    @Override
+    public boolean onlyCleanSingleItemType() {
+        return false;
+    }
+
+    @Override
+    public boolean isCleanDropsItemListAsWhitelist() {
+        return false;
+    }
+
+    @Override
+    public List<? extends String> getCleanDropsItemList() {
+        return List.of();
+    }
+
+    @Override
+    public boolean isCleanDropsDimensionListAsWhitelist() {
+        return false;
+    }
+
+    @Override
+    public List<? extends String> getCleanDropsDimensionList() {
+        return List.of();
     }
 }
