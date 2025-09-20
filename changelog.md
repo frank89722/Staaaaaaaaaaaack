@@ -1,1 +1,3 @@
-- Fix item duplication issue when item pickup got cancelled in NeoForge
+- Update to mc 1.21.8
+- Add item whitelist in config
+- Add white/blacklist by the dimension
