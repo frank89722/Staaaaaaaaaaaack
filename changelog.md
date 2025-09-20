@@ -1,2 +1,2 @@
-- Update to MC 1.21.1
-- Fix item duplication bug with Sophisticated Backpack
+- Add item whitelist in config
+- Add white/blacklist by the dimension

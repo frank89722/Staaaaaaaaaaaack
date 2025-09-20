@@ -9,7 +9,8 @@ Current features:
 - Customizable merge distance for drops.
 - Customizable maximum size for drops.
 - Customizable overlay size and render distance.
-- Blacklist configuration for items that you don't want to exceed their default stack limit. You can add them from the common config file or assign them a specific item tag.
+- Blacklist or whitelist configuration for items that you don't want to exceed their default stack limit by name, 
+  tag or dimension. You can add them from the common config file or assign them a specific item tag.
 
 The name contains 12 'a's btw. 🍔
 
@@ -18,9 +19,5 @@ The name contains 12 'a's btw. 🍔
 
 | MC version | NeoForge | Fabric |  Forge   |
 |:----------:|:--------:|:------:|:--------:|
-|   1.20.4   |   main   |  main  |    -     |
-|   1.20.2   |   EOL    |  EOL   |    -     |
-|   1.20.1   |   EOL    | active |  active  |
-|   1.19.4   |    -     | active |  active  |
-|   1.19.2   |    -     |  EOL   |   EOL    |
-|   1.18.2   |    -     |  EOL   |   EOL    |
+|   1.21.8   |   main   |  main  |    -     |
+|   1.21.1   |  active  | active |    -     |
